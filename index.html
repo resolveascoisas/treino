@@ -366,35 +366,54 @@
             document.getElementById('loading-overlay').style.display = 'none';
         }
 
-        // --- AUTENTICAÇÃO ---
+// --- AUTENTICAÇÃO COM TRATAMENTO DE ERROS CRÍTICOS ---
         async function handleLogin() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error');
             
             errorDiv.style.display = 'none';
-            if(!email || !password) return;
+            if(!email || !password) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = 'Por favor, preencha o e-mail e a senha.';
+                return;
+            }
 
-            showLoading('Autenticando...');
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-            
-            if (error) {
+            try {
+                showLoading('Autenticando...');
+                
+                // Execução da tentativa de login com proteção contra falhas de rede
+                const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+                
+                hideLoading();
+                
+                if (error) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.innerText = 'Erro: ' + error.message;
+                } else {
+                    currentUser = data.user;
+                    initDashboard();
+                }
+            } catch (err) {
+                // Captura erros quando o Supabase está inacessível ou o projeto está pausado
                 hideLoading();
                 errorDiv.style.display = 'block';
-                errorDiv.innerText = error.message;
-            } else {
-                currentUser = data.user;
-                initDashboard();
+                errorDiv.innerText = 'Falha de ligação: Não foi possível contactar o servidor do Supabase.';
+                console.error('Erro crítico detetado no login:', err);
             }
         }
 
-        async function handleLogout() {
-            showLoading('Saindo...');
-            await supabase.auth.signOut();
-            document.getElementById('dashboard-section').style.display = 'none';
-            document.getElementById('login-section').style.display = 'flex';
-            hideLoading();
-        }
+        // Configuração para permitir a submissão com a tecla Enter
+        document.addEventListener('DOMContentLoaded', () => {
+            ['email', 'password'].forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') handleLogin();
+                    });
+                }
+            });
+        });
 
         // --- INICIALIZAÇÃO DO DASHBOARD ---
         async function initDashboard() {
