@@ -18,10 +18,10 @@
             --text-main: #1f2937;
             --text-muted: #6b7280;
             --border: #e5e7eb;
-            --red: #ef4444;     /* Vermelho Vivo */
-            --yellow: #facc15;  /* Amarelo Vivo */
-            --green: #10b981;   /* Verde Vivo */
-            --blue-info: #0ea5e9; /* Azul para participação */
+            --red: #ef4444;     
+            --yellow: #facc15;  
+            --green: #10b981;   
+            --blue-info: #0ea5e9; 
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
@@ -86,25 +86,41 @@
         #print-header h3 { margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--primary); }
         #print-filters-text { font-size: 0.9rem; line-height: 1.5; color: #374151; }
 
-        /* FILTROS & CARDS */
-        .filters-container {
-            background: var(--card-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;
-        }
-        .filter-item select { width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; }
+        /* --- FILTROS COM CHECKBOX --- */
+        .filters-wrapper { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
         
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
-        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); }
-        .card h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; }
-        .card .value { font-size: 2rem; font-weight: bold; margin-top: 0.5rem; color: var(--primary); }
-        .card .desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+        .filter-item label { display: block; margin-bottom: 0.4rem; font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .multi-select { position: relative; user-select: none; width: 100%; }
+        .select-display { padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; background: white; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--text-main); min-height: 38px; }
+        .select-display span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .select-display:after { content: '▼'; font-size: 0.7rem; color: var(--text-muted); margin-left: 0.5rem; }
+        .select-options { position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 4px; max-height: 250px; overflow-y: auto; z-index: 100; display: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-top: 4px; }
+        .select-options.show { display: block; }
+        .select-options label { display: flex; align-items: center; padding: 0.6rem; cursor: pointer; transition: background 0.2s; font-size: 0.85rem; font-weight: normal; margin: 0; border-bottom: 1px solid #f3f4f6; color: var(--text-main); }
+        .select-options label:hover { background: #f9fafb; color: var(--primary); }
+        .select-options input[type="checkbox"] { margin-right: 0.6rem; cursor: pointer; width: 14px; height: 14px; }
+
+        .btn-clear { background: transparent; border: 1px solid var(--red); color: var(--red); border-radius: 4px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: all 0.2s; height: 38px; width: 100%; display: flex; align-items: center; justify-content: center; }
+        .btn-clear:hover { background: var(--red); color: white; }
+
+        /* CARDS */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border-left: 5px solid var(--primary); display: flex; flex-direction: column;}
+        .card h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; }
+        .card .value { font-size: 2rem; font-weight: bold; margin-top: auto; color: var(--primary); }
+        
+        .podium-list { list-style: none; margin-top: 0.5rem; font-size: 0.95rem; width: 100%; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+        .podium-list li { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; border-bottom: 1px dashed var(--border); padding-bottom: 0.3rem; }
+        .podium-list li:last-child { border-bottom: none; margin-bottom: 0;}
+        .podium-list span { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
+        .podium-list strong { font-size: 1.05rem; }
 
         /* CHARTS & HEATMAP TABLE */
         .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
         .chart-container { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); height: 350px; }
         .table-container { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 2rem; overflow-x: auto; }
         
-        /* HEATMAP ESTILOS (FAROL & PARTICIPAÇÃO) */
         table.heatmap { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
         table.heatmap th, table.heatmap td { border: 1px solid var(--border); padding: 0.5rem; text-align: center; vertical-align: middle; }
         table.heatmap th { background-color: #111827; color: white; font-weight: 600; cursor: pointer; user-select: none; }
@@ -134,17 +150,24 @@
         .modal-table th { background-color: #374151; color: white; }
 
         #selected-row-indicator { display: none; background: #dbeafe; color: var(--primary); padding: 0.5rem 1rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.9rem; font-weight: 600; justify-content: space-between; align-items: center; }
+        #modal-filter-info { font-size: 0.85rem; background: #f3f4f6; padding: 0.6rem; border-radius: 4px; margin-bottom: 1rem; color: #374151; border: 1px solid var(--border); }
+
+        /* DISCLAIMER MODAL (VERSÃO BETA) */
+        #disclaimer-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 10001; justify-content: center; align-items: center; }
+        #disclaimer-modal .modal-content { background: white; padding: 2.5rem; border-radius: 8px; width: 90%; max-width: 550px; position: relative; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); border-top: 5px solid var(--yellow); text-align: center; }
+        #disclaimer-modal h2 { margin-bottom: 1rem; color: var(--text-main); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        #disclaimer-modal p { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 1rem; text-align: justify; }
 
         /* --- MODO IMPRESSÃO OTIMIZADO --- */
         @media print {
             @page { size: landscape; margin: 10mm; } 
             body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            #login-section, header, .filters-container, .btn-print, .view-toggles, #compare-filters, #selected-row-indicator, #ranking-modal { display: none !important; }
+            #login-section, header, .filters-wrapper, .btn-print, .view-toggles, #compare-filters, #selected-row-indicator, #ranking-modal, #disclaimer-modal { display: none !important; }
             #dashboard-section { display: block !important; }
             .container { padding: 0 !important; max-width: 100% !important; margin: 0 !important; width: 100% !important; }
             
             #print-header { display: block !important; margin-bottom: 1rem; }
-            .cards-grid { gap: 0.5rem; margin-bottom: 1rem; }
+            .cards-grid { gap: 0.5rem; margin-bottom: 1rem; align-items: stretch;}
             .card { padding: 0.5rem 1rem; box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
             .card .value { font-size: 1.5rem; }
             .charts-grid { display: flex; flex-direction: row; gap: 0.5rem; margin-bottom: 1rem; }
@@ -169,16 +192,28 @@
     <!-- Overlay Loading -->
     <div id="loading-overlay"><div class="spinner"></div><h3 style="margin-top: 1rem; color: var(--text-main);" id="loading-text">Carregando...</h3></div>
 
-    <!-- Modal Pop-up -->
+    <!-- Modal Disclaimer (Versão Beta) -->
+    <div id="disclaimer-modal">
+        <div class="modal-content">
+            <h2>⚠️ Versão Beta</h2>
+            <p>Este painel encontra-se em fase de <strong>testes e homologação (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
+            <p>As notas apresentadas podem diferir dos painéis disponibilizados no BI do <strong>Escola Total</strong> e nas tabelas oficiais publicadas pela URE. Isso ocorre porque o método de cálculo aplicado aqui (Média Ponderada Real Bidimensional) difere intencionalmente para padronizar e aprofundar as análises.</p>
+            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Diretoria de Ensino.</p>
+            <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="closeDisclaimer()">Ciente, acessar painel</button>
+        </div>
+    </div>
+
+    <!-- Modal Pop-up (Relatório) -->
     <div id="ranking-modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
             <h2 id="modal-title">Mini Relatório de Desempenho</h2>
-            <p id="modal-desc" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 1rem; font-weight: 500;"></p>
+            <p id="modal-desc" style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 500;"></p>
+            <div id="modal-filter-info"></div>
+
             <div class="rank-box">
                 <p>Nota Ponderada Real: <strong id="modal-nota" style="font-size: 1.2rem;"></strong></p>
-                <p>Classificação Regional (URE): <strong id="modal-rank-ure">Calculando...</strong></p>
-                <p>Classificação na Unidade Escolar (UE): <strong id="modal-rank-ue">Calculando...</strong></p>
+                <p>Classificação (No Contexto Atual): <strong id="modal-rank-context">Calculando...</strong></p>
             </div>
             <h3 style="font-size: 1.05rem; color: var(--primary); margin-top: 1.5rem; margin-bottom: 0.5rem;">📊 Comparativo Histórico Transversal</h3>
             <div id="modal-comparativo-container"></div>
@@ -215,14 +250,41 @@
                 <p id="print-filters-text"></p>
             </div>
 
-            <!-- Filtros Superiores -->
-            <div class="filters-container">
-                <div class="filter-item" id="filter-escola-container"><label>Escola</label><select id="filter-escola" onchange="resetRowSelection(); applyFilters();"><option value="ALL">Todas</option></select></div>
-                <div class="filter-item"><label>Bimestre</label><select id="filter-bimestre" onchange="applyFilters()"><option value="ALL">Todos</option></select></div>
-                <div class="filter-item"><label>Componente</label><select id="filter-componente" onchange="applyFilters()"><option value="ALL">Todos</option></select></div>
-                <div class="filter-item"><label>Tipo Avaliação</label><select id="filter-tipo-aval" onchange="applyFilters()"><option value="ALL">Todos</option></select></div>
-                <div class="filter-item"><label>Tipo Classe</label><select id="filter-tipo-classe" onchange="applyFilters()"><option value="ALL">Todos</option></select></div>
-                <div class="filter-item"><label>Tipo Ensino</label><select id="filter-tipo-ensino" onchange="applyFilters()"><option value="ALL">Todos</option></select></div>
+            <!-- Filtros Superiores com Checkboxes -->
+            <div class="filters-wrapper">
+                <div class="filters-grid">
+                    <div class="filter-item" id="filter-escola-container">
+                        <label>Escola</label>
+                        <div class="multi-select" data-filter="escola">
+                            <div class="select-display" onclick="toggleDropdown(this)"><span>Todos</span></div>
+                            <div class="select-options"></div>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Componente Curricular</label>
+                        <div class="multi-select" data-filter="componente">
+                            <div class="select-display" onclick="toggleDropdown(this)"><span>Todos</span></div>
+                            <div class="select-options"></div>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Tipo Classe</label>
+                        <div class="multi-select" data-filter="tipo_classe">
+                            <div class="select-display" onclick="toggleDropdown(this)"><span>Todos</span></div>
+                            <div class="select-options"></div>
+                        </div>
+                    </div>
+                    <div class="filter-item">
+                        <label>Tipo Ensino</label>
+                        <div class="multi-select" data-filter="tipo_ensino">
+                            <div class="select-display" onclick="toggleDropdown(this)"><span>Todos</span></div>
+                            <div class="select-options"></div>
+                        </div>
+                    </div>
+                    <div class="filter-item" style="display: flex; align-items: flex-end;">
+                        <button class="btn-clear" onclick="clearFilters()">Limpar Filtros ✕</button>
+                    </div>
+                </div>
             </div>
 
             <!-- Alternância de Modos da Tabela -->
@@ -253,31 +315,30 @@
                 <button class="btn" style="padding:0.25rem 0.5rem; font-size:0.8rem; background:#ef4444;" onclick="resetRowSelection()">Remover Filtro ✕</button>
             </div>
 
-            <!-- Cards Informativos -->
+            <!-- CARDS C/ PÓDIO -->
             <div class="cards-grid">
                 <div class="card">
                     <h3>Média Ponderada Real</h3>
                     <div class="value" id="card-media-geral">-</div>
-                    <div class="desc" id="card-avaliados-geral">0 avaliações</div>
                 </div>
                 <div class="card">
-                    <h3>Painel de Participação</h3>
-                    <div class="value" id="card-participacao" style="color: var(--blue-info);">-</div>
-                    <div class="desc" id="card-participacao-desc">0 de 0 alunos reais</div>
+                    <h3>Destaques (Componentes)</h3>
+                    <div id="card-melhor-disc">-</div>
                 </div>
                 <div class="card">
-                    <h3>Melhor Disciplina</h3>
-                    <div class="value" id="card-melhor-disc" style="color: var(--green);">-</div>
-                    <div class="desc" id="card-melhor-nota">-</div>
+                    <h3>Oportunidades de Melhoria</h3>
+                    <div id="card-pior-disc">-</div>
                 </div>
                 <div class="card">
-                    <h3>Maior Defasagem</h3>
-                    <div class="value" id="card-pior-disc" style="color: var(--red);">-</div>
-                    <div class="desc" id="card-pior-nota">-</div>
+                    <h3>Destaques (<span id="label-destaque-ent">Entidades</span>)</h3>
+                    <div id="card-melhor-entidade">-</div>
+                </div>
+                <div class="card">
+                    <h3>Oportunidades (<span id="label-pior-ent">Entidades</span>)</h3>
+                    <div id="card-pior-entidade">-</div>
                 </div>
             </div>
 
-            <!-- Mapa de Acompanhamento -->
             <div class="table-container">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
                     <h3 id="table-title-context">Mapa Dinâmico de Notas</h3>
@@ -290,7 +351,6 @@
                 <div id="heatmap-container"></div>
             </div>
 
-            <!-- Gráficos Analíticos -->
             <div class="charts-grid">
                 <div class="chart-container"><canvas id="chartComponentes"></canvas></div>
                 <div class="chart-container"><canvas id="chartEvolucao"></canvas></div>
@@ -314,10 +374,63 @@
         
         let currentViewMode = 'eval'; 
         let selectedRowEntity = null; 
-        let sortColumn = 'media_geral'; // Ordenação padrão
+        let sortColumn = 'media_geral'; 
         let sortDirection = 'desc'; 
 
-        // --- DECLARAÇÕES HOISTED (Previnem Erros de Referência) ---
+        // --- DISCLAIMER LOGIC ---
+        function closeDisclaimer() {
+            document.getElementById('disclaimer-modal').style.display = 'none';
+        }
+
+        function showDisclaimer() {
+            if (!sessionStorage.getItem('disclaimerAccepted')) {
+                document.getElementById('disclaimer-modal').style.display = 'flex';
+                sessionStorage.setItem('disclaimerAccepted', 'true');
+            }
+        }
+
+        // --- MANIPULAÇÃO DO DROPDOWN (MULTIPLE CHECKBOXES) ---
+        function toggleDropdown(element) {
+            const options = element.nextElementSibling;
+            const isShowing = options.classList.contains('show');
+            document.querySelectorAll('.select-options.show').forEach(opt => opt.classList.remove('show'));
+            if (!isShowing) options.classList.add('show');
+        }
+
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.multi-select')) {
+                document.querySelectorAll('.select-options.show').forEach(opt => opt.classList.remove('show'));
+            }
+        });
+
+        function updateMultiSelectDisplay(filterKey) {
+            const container = document.querySelector(`.multi-select[data-filter="${filterKey}"]`);
+            if(!container) return;
+            const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+            const displaySpan = container.querySelector('.select-display span');
+            
+            if (checkboxes.length === 0) {
+                displaySpan.innerText = "Todos";
+            } else if (checkboxes.length === 1) {
+                displaySpan.innerText = checkboxes[0].value;
+            } else {
+                displaySpan.innerText = `${checkboxes.length} selecionados`;
+            }
+        }
+
+        function clearFilters() {
+            document.querySelectorAll('.multi-select input[type="checkbox"]').forEach(cb => cb.checked = false);
+            ['escola', 'componente', 'tipo_classe', 'tipo_ensino'].forEach(k => updateMultiSelectDisplay(k));
+            resetRowSelection();
+            applyFilters();
+        }
+
+        function getSelectedCheckboxes(filterKey) {
+            const checkboxes = document.querySelectorAll(`.multi-select[data-filter="${filterKey}"] input[type="checkbox"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // --- CONTROLES GERAIS ---
         window.highlightSelectedRow = function() {
             const rows = document.querySelectorAll('table.heatmap tbody tr');
             rows.forEach(tr => {
@@ -401,10 +514,7 @@
                 resAvaliacoes = rAva;
 
                 const rEsc = await fetchAllData('escolas');
-                if (rEsc.error) {
-                    console.warn("Aviso: 'escolas' falhou. Fallback por turmas.", rEsc.error);
-                    resEscolas = { data: [] };
-                } else { resEscolas = rEsc; }
+                if (rEsc.error) { resEscolas = { data: [] }; } else { resEscolas = rEsc; }
 
                 escolasMap.clear();
                 resEscolas.data.forEach(e => { if (e.id_escola) escolasMap.set(e.id_escola, e); });
@@ -436,7 +546,6 @@
                 const turmasMap = new Map(); resTurmas.data.forEach(t => { if(t.id) turmasMap.set(t.id, t); });
                 const avaliacoesMap = new Map(); resAvaliacoes.data.forEach(a => { if(a.id) avaliacoesMap.set(a.id, a); });
 
-                // Filtrar "Desconhecida" na raiz
                 globalData = resDesempenho.data.map(d => {
                     const turma = turmasMap.get(d.id) || {};
                     const aval = avaliacoesMap.get(d.id_avaliacao) || {};
@@ -459,25 +568,38 @@
                     };
                 }).filter(d => d.escola !== 'Desconhecida' && d.turma_nome !== 'Desconhecida');
 
-                populateFilters(); applyFilters(); hideLoading();
+                populateFilters(); applyFilters(); hideLoading(); showDisclaimer();
             } catch(e) { console.error(e); alert("Erro ao Consolidar Base: \n" + e.message); hideLoading(); }
         }
 
         function populateFilters() {
+            const buildCheckboxes = (filterKey, values) => {
+                const container = document.querySelector(`.multi-select[data-filter="${filterKey}"] .select-options`);
+                if(!container) return;
+                container.innerHTML = '';
+                values.forEach(v => {
+                    const safeV = v.replace(/"/g, '&quot;');
+                    const label = document.createElement('label');
+                    label.innerHTML = `<input type="checkbox" value="${safeV}" onchange="updateMultiSelectDisplay('${filterKey}'); applyFilters();"> ${v}`;
+                    container.appendChild(label);
+                });
+                updateMultiSelectDisplay(filterKey);
+            };
+
+            buildCheckboxes('escola', getUniqueValues(globalData, 'escola'));
+            buildCheckboxes('componente', getUniqueValues(globalData, 'componente'));
+            buildCheckboxes('tipo_classe', getUniqueValues(globalData, 'tipo_classe'));
+            buildCheckboxes('tipo_ensino', getUniqueValues(globalData, 'tipo_ensino'));
+
             const addOptions = (selectId, values) => {
                 const select = document.getElementById(selectId);
-                if(selectId !== 'sub-filter-comp' && selectId !== 'sub-filter-aval' && selectId !== 'compare-filter-componente') select.innerHTML = '<option value="ALL">Todos</option>';
-                else if (selectId === 'compare-filter-componente') select.innerHTML = '<option value="GERAL">Geral</option>';
+                if(selectId === 'compare-filter-componente') select.innerHTML = '<option value="GERAL">Geral</option>';
                 else select.innerHTML = '';
                 values.forEach(v => { select.innerHTML += `<option value="${v}">${v}</option>`; });
             };
-            addOptions('filter-escola', getUniqueValues(globalData, 'escola'));
-            addOptions('filter-bimestre', getUniqueValues(globalData, 'aval_bimestre'));
-            addOptions('filter-componente', getUniqueValues(globalData, 'componente'));
-            addOptions('filter-tipo-aval', getUniqueValues(globalData, 'aval_tipo'));
-            addOptions('filter-tipo-classe', getUniqueValues(globalData, 'tipo_classe'));
-            addOptions('filter-tipo-ensino', getUniqueValues(globalData, 'tipo_ensino'));
+            
             addOptions('sub-filter-comp', getUniqueValues(globalData, 'componente')); 
+            addOptions('compare-filter-componente', getUniqueValues(globalData, 'componente'));
 
             let avalSet = new Set(); globalData.forEach(d => avalSet.add(`${d.aval_bimestre}|||${d.aval_nome}`));
             let avalList = Array.from(avalSet).sort();
@@ -492,37 +614,36 @@
                 sel1.innerHTML += `<option value="${v}">${label}</option>`;
                 sel2.innerHTML += `<option value="${v}" ${i===1?'selected':''}>${label}</option>`;
             });
-            addOptions('compare-filter-componente', getUniqueValues(globalData, 'componente'));
         }
 
         function getUniqueValues(data, key) { return [...new Set(data.map(item => item[key]))].filter(Boolean).sort(); }
 
         function applyFilters() {
-            const fEscola = document.getElementById('filter-escola').value;
-            const fBimestre = document.getElementById('filter-bimestre').value;
-            const fComponente = document.getElementById('filter-componente').value;
-            const fTipoAval = document.getElementById('filter-tipo-aval').value;
-            const fTipoClasse = document.getElementById('filter-tipo-classe').value;
-            const fTipoEnsino = document.getElementById('filter-tipo-ensino').value;
+            const selEscolas = getSelectedCheckboxes('escola');
+            const selComponentes = getSelectedCheckboxes('componente');
+            const selTipoClasse = getSelectedCheckboxes('tipo_classe');
+            const selTipoEnsino = getSelectedCheckboxes('tipo_ensino');
 
             filteredData = globalData.filter(d => {
-                return (fEscola === 'ALL' || d.escola === fEscola) &&
-                       (fBimestre === 'ALL' || d.aval_bimestre === fBimestre) &&
-                       (fComponente === 'ALL' || d.componente === fComponente) &&
-                       (fTipoAval === 'ALL' || d.aval_tipo === fTipoAval) &&
-                       (fTipoClasse === 'ALL' || d.tipo_classe === fTipoClasse) &&
-                       (fTipoEnsino === 'ALL' || d.tipo_ensino === fTipoEnsino);
+                const passEscola = selEscolas.length === 0 || selEscolas.includes(d.escola);
+                const passComponente = selComponentes.length === 0 || selComponentes.includes(d.componente);
+                const passTipoClasse = selTipoClasse.length === 0 || selTipoClasse.includes(d.tipo_classe);
+                const passTipoEnsino = selTipoEnsino.length === 0 || selTipoEnsino.includes(d.tipo_ensino);
+                
+                return passEscola && passComponente && passTipoClasse && passTipoEnsino;
             });
             processViewAndRender();
         }
 
         function updatePrintHeader() {
-            const getVal = id => { const el = document.getElementById(id); return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''; };
-            let text = `<strong>Escola:</strong> ${getVal('filter-escola')} &nbsp;|&nbsp; <strong>Bimestre:</strong> ${getVal('filter-bimestre')} &nbsp;|&nbsp; <strong>Componente:</strong> ${getVal('filter-componente')} <br> <strong>Tipo Aval.:</strong> ${getVal('filter-tipo-aval')} &nbsp;|&nbsp; <strong>Classe:</strong> ${getVal('filter-tipo-classe')} &nbsp;|&nbsp; <strong>Ensino:</strong> ${getVal('filter-tipo-ensino')}`;
+            const getCheckVals = key => { const vals = getSelectedCheckboxes(key); return vals.length === 0 ? 'Todos' : vals.join(', '); };
+            const getSelectVal = id => { const el = document.getElementById(id); return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''; };
+
+            let text = `<strong>Escola(s):</strong> ${getCheckVals('escola')} &nbsp;|&nbsp; <strong>Componente(s):</strong> ${getCheckVals('componente')} <br> <strong>Classe(s):</strong> ${getCheckVals('tipo_classe')} &nbsp;|&nbsp; <strong>Ensino:</strong> ${getCheckVals('tipo_ensino')}`;
             
-            if(currentViewMode === 'single_component') text += `<br><strong>Visão:</strong> Foco no Componente (${getVal('sub-filter-comp')})`;
-            if(currentViewMode === 'single_eval') text += `<br><strong>Visão:</strong> Foco na Avaliação (${getVal('sub-filter-aval').replace('|||', ' - ')})`;
-            if(currentViewMode === 'compare') text += `<br><strong>Visão:</strong> Comparativo (${getVal('comp-aval-1').replace('|||', ' - ')} vs ${getVal('comp-aval-2').replace('|||', ' - ')} - Filtro: ${getVal('compare-filter-componente')})`;
+            if(currentViewMode === 'single_component') text += `<br><strong>Visão:</strong> Foco no Componente (${getSelectVal('sub-filter-comp')})`;
+            if(currentViewMode === 'single_eval') text += `<br><strong>Visão:</strong> Foco na Avaliação (${getSelectVal('sub-filter-aval').replace('|||', ' - ')})`;
+            if(currentViewMode === 'compare') text += `<br><strong>Visão:</strong> Comparativo (${getSelectVal('comp-aval-1').replace('|||', ' - ')} vs ${getSelectVal('comp-aval-2').replace('|||', ' - ')} - Filtro: ${getSelectVal('compare-filter-componente')})`;
             
             document.getElementById('print-filters-text').innerHTML = text;
         }
@@ -559,18 +680,22 @@
         }
         function resetRowSelection() { selectedRowEntity = null; document.getElementById('selected-row-indicator').style.display = 'none'; updateChartsAndCards(); window.highlightSelectedRow(); }
 
-        // --- CÁLCULO DE PARTICIPAÇÃO E CARDS ---
+        // --- CÁLCULO DE CARDS (PÓDIOS MELHORADOS) ---
         function updateChartsAndCards() {
             let subsetData = [...activeData];
+            const isUreView = (userProfile.tipo_usuario !== 'ESCOLA' && getSelectedCheckboxes('escola').length === 0);
+            
             if (selectedRowEntity) {
-                const isUreView = (userProfile.tipo_usuario !== 'ESCOLA' && document.getElementById('filter-escola').value === 'ALL');
                 if (isUreView) subsetData = subsetData.filter(d => d.escola === selectedRowEntity);
                 else subsetData = subsetData.filter(d => d.turma_nome === selectedRowEntity);
             }
 
             if (subsetData.length === 0) {
-                document.getElementById('card-media-geral').innerText = '-'; document.getElementById('card-avaliados-geral').innerText = '0 alunos';
-                document.getElementById('card-participacao').innerText = '-'; document.getElementById('card-participacao-desc').innerText = '0 alunos reais';
+                document.getElementById('card-media-geral').innerText = '-'; 
+                document.getElementById('card-melhor-disc').innerHTML = '-';
+                document.getElementById('card-pior-disc').innerHTML = '-';
+                document.getElementById('card-melhor-entidade').innerHTML = '-';
+                document.getElementById('card-pior-entidade').innerHTML = '-';
                 renderCharts(subsetData); return;
             }
 
@@ -578,37 +703,52 @@
             subsetData.forEach(d => { totalNotasPonderadas += (d.nota * d.avaliados * d.peso); totalPesosAvaliados += (d.avaliados * d.peso); });
             document.getElementById('card-media-geral').innerText = totalPesosAvaliados ? (totalNotasPonderadas / totalPesosAvaliados).toFixed(2).replace('.', ',') : '-';
 
-            const uniqueTurmasParticipantesMap = new Map();
-            subsetData.forEach(d => { if (d.id_turma && !uniqueTurmasParticipantesMap.has(d.id_turma)) uniqueTurmasParticipantesMap.set(d.id_turma, d.avaliados); });
-            let totalAlunosUnicosParticipantes = 0; uniqueTurmasParticipantesMap.forEach(v => { totalAlunosUnicosParticipantes += v; });
-
-            let totalAlunosMatriculadosBase = 0;
-            if (escolasMap.size > 0) {
-                const uniqueSchoolIds = [...new Set(subsetData.map(d => d.id_escola))].filter(Boolean);
-                uniqueSchoolIds.forEach(id => { const e = escolasMap.get(id); if (e) totalAlunosMatriculadosBase += parseInt(e.total_alunos) || 0; });
-            } else {
-                const uniqueTurmasMatriculasMap = new Map();
-                subsetData.forEach(d => { if (d.id_turma) uniqueTurmasMatriculasMap.set(d.id_turma, d.matriculas); });
-                uniqueTurmasMatriculasMap.forEach(mat => { totalAlunosMatriculadosBase += mat; });
-            }
-
-            if (totalAlunosMatriculadosBase > 0) {
-                const taxaParticipacaoReal = (totalAlunosUnicosParticipantes / totalAlunosMatriculadosBase);
-                document.getElementById('card-participacao').innerText = (taxaParticipacaoReal * 100).toFixed(1).replace('.', ',') + '%';
-                document.getElementById('card-participacao-desc').innerText = `${totalAlunosUnicosParticipantes} de ${totalAlunosMatriculadosBase} matrículas`;
-                document.getElementById('card-avaliados-geral').innerText = `${totalAlunosUnicosParticipantes} estudantes distintos`;
-            } else {
-                document.getElementById('card-participacao').innerText = '-';
-                document.getElementById('card-participacao-desc').innerText = 'Matrículas zeradas';
-            }
-
-            const compData = calculateAverages(subsetData, 'componente', false);
+            // PÓDIOS DE COMPONENTES
+            const compData = calculateAverages(subsetData, 'componente', false).filter(d => d.label !== 'Desconhecida' && d.label !== 'N/A');
             if(compData.length > 0) {
-                document.getElementById('card-melhor-disc').innerText = compData[0].label;
-                document.getElementById('card-melhor-nota').innerText = `Média: ${compData[0].media.replace('.', ',')}`;
-                document.getElementById('card-pior-disc').innerText = compData[compData.length - 1].label;
-                document.getElementById('card-pior-nota').innerText = `Média: ${compData[compData.length - 1].media.replace('.', ',')}`;
+                let htmlMelhores = '<ul class="podium-list">';
+                compData.slice(0, 3).forEach((d, i) => {
+                    let cor = i === 0 ? 'var(--green)' : 'var(--text-main)';
+                    htmlMelhores += `<li style="color:${cor};"><span>${i+1}º ${d.label}</span> <strong>${d.media.replace('.', ',')}</strong></li>`;
+                });
+                document.getElementById('card-melhor-disc').innerHTML = htmlMelhores + '</ul>';
+
+                let htmlPiores = '<ul class="podium-list">';
+                const pioresData = [...compData].reverse().slice(0, 3);
+                pioresData.forEach((d, i) => {
+                    let cor = i === 0 ? 'var(--red)' : 'var(--text-main)';
+                    htmlPiores += `<li style="color:${cor};"><span>${i+1}º ${d.label}</span> <strong>${d.media.replace('.', ',')}</strong></li>`;
+                });
+                document.getElementById('card-pior-disc').innerHTML = htmlPiores + '</ul>';
+            } else {
+                document.getElementById('card-melhor-disc').innerHTML = '-'; document.getElementById('card-pior-disc').innerHTML = '-';
             }
+
+            // PÓDIOS DE ENTIDADES (Escola ou Turma)
+            const entityField = isUreView ? 'escola' : 'turma_nome';
+            document.getElementById('label-destaque-ent').innerText = isUreView ? 'Escolas' : 'Turmas';
+            document.getElementById('label-pior-ent').innerText = isUreView ? 'Escolas' : 'Turmas';
+            
+            const entData = calculateAverages(subsetData, entityField, false).filter(d => d.label !== 'Desconhecida' && d.label !== 'N/A');
+            if(entData.length > 0) {
+                let htmlMelhoresEnt = '<ul class="podium-list">';
+                entData.slice(0, 3).forEach((d, i) => {
+                    let cor = i === 0 ? 'var(--green)' : 'var(--text-main)';
+                    htmlMelhoresEnt += `<li style="color:${cor};"><span title="${d.label}">${i+1}º ${d.label}</span> <strong>${d.media.replace('.', ',')}</strong></li>`;
+                });
+                document.getElementById('card-melhor-entidade').innerHTML = htmlMelhoresEnt + '</ul>';
+
+                let htmlPioresEnt = '<ul class="podium-list">';
+                const pioresEntData = [...entData].reverse().slice(0, 3);
+                pioresEntData.forEach((d, i) => {
+                    let cor = i === 0 ? 'var(--red)' : 'var(--text-main)';
+                    htmlPioresEnt += `<li style="color:${cor};"><span title="${d.label}">${i+1}º ${d.label}</span> <strong>${d.media.replace('.', ',')}</strong></li>`;
+                });
+                document.getElementById('card-pior-entidade').innerHTML = htmlPioresEnt + '</ul>';
+            } else {
+                document.getElementById('card-melhor-entidade').innerHTML = '-'; document.getElementById('card-pior-entidade').innerHTML = '-';
+            }
+
             renderCharts(subsetData);
         }
 
@@ -629,15 +769,12 @@
             return result;
         }
 
-        // --- CALCULA PARTICIPAÇÃO PARA CÉLULAS ESPECÍFICAS DA MATRIZ ---
         const calcPart = (mapAval, isUreView) => {
             let hC = 0, mat = 0; const uniqueEscolas = new Set();
             mapAval.forEach(v => {
                 hC += v.aval;
-                if(isUreView) {
-                    if (v.idEsc && escolasMap.has(v.idEsc)) uniqueEscolas.add(v.idEsc);
-                    else mat += v.mat;
-                } else mat += v.mat;
+                if(isUreView) { if (v.idEsc && escolasMap.has(v.idEsc)) uniqueEscolas.add(v.idEsc); else mat += v.mat; } 
+                else mat += v.mat;
             });
             if(isUreView) uniqueEscolas.forEach(id => { mat += parseInt(escolasMap.get(id).total_alunos) || 0; });
             return mat > 0 ? (hC / mat) * 100 : 0;
@@ -648,7 +785,7 @@
             const container = document.getElementById('heatmap-container');
             if (activeData.length === 0) { container.innerHTML = '<p style="padding:1rem;">Sem dados.</p>'; return; }
 
-            const isUreView = (userProfile.tipo_usuario !== 'ESCOLA' && document.getElementById('filter-escola').value === 'ALL');
+            const isUreView = (userProfile.tipo_usuario !== 'ESCOLA' && getSelectedCheckboxes('escola').length === 0);
             const rowKeyField = isUreView ? 'escola' : 'turma_nome';
             
             let colunasSet = new Set();
@@ -663,7 +800,7 @@
             if (currentViewMode === 'compare') {
                 const a1 = document.getElementById('comp-aval-1').value; const a2 = document.getElementById('comp-aval-2').value;
                 colunas = []; if (a1) colunas.push(a1); if (a2 && a2 !== a1) colunas.push(a2); 
-                if (colunas.length === 2) { colunas.push('VARIACAO'); colunas.push('VARIACAO_PART'); }
+                if (colunas.length === 2) { colunas.push('VARIACAO'); }
             }
 
             const matriz = {}; const rowTotalizador = {}; const participacaoPorLinha = {};
@@ -711,14 +848,6 @@
                     let n1B = (matriz[b] && matriz[b][a1] && matriz[b][a1].totalWeight > 0) ? matriz[b][a1].sumProduct / matriz[b][a1].totalWeight : null;
                     let n2B = (matriz[b] && matriz[b][a2] && matriz[b][a2].totalWeight > 0) ? matriz[b][a2].sumProduct / matriz[b][a2].totalWeight : null;
                     valA = (n1A !== null && n2A !== null) ? (n2A - n1A) : -999; valB = (n1B !== null && n2B !== null) ? (n2B - n1B) : -999;
-                } else if (sortColumn === 'VARIACAO_PART') {
-                    const a1 = colunas[0]; const a2 = colunas[1];
-                    let p1A = (matriz[a] && matriz[a][a1]) ? calcPart(matriz[a][a1].mapAval, isUreView) : null;
-                    let p2A = (matriz[a] && matriz[a][a2]) ? calcPart(matriz[a][a2].mapAval, isUreView) : null;
-                    let p1B = (matriz[b] && matriz[b][a1]) ? calcPart(matriz[b][a1].mapAval, isUreView) : null;
-                    let p2B = (matriz[b] && matriz[b][a2]) ? calcPart(matriz[b][a2].mapAval, isUreView) : null;
-                    valA = (p1A !== null && p2A !== null && p1A > 0 && p2A > 0) ? (p2A - p1A) : -999;
-                    valB = (p1B !== null && p2B !== null && p1B > 0 && p2B > 0) ? (p2B - p1B) : -999;
                 } else {
                     valA = (matriz[a] && matriz[a][sortColumn] && matriz[a][sortColumn].totalWeight > 0) ? (matriz[a][sortColumn].sumProduct / matriz[a][sortColumn].totalWeight) : -1;
                     valB = (matriz[b] && matriz[b][sortColumn] && matriz[b][sortColumn].totalWeight > 0) ? (matriz[b][sortColumn].sumProduct / matriz[b][sortColumn].totalWeight) : -1;
@@ -729,14 +858,10 @@
             let html = `<table class="heatmap"><thead><tr>`;
             html += `<th>Clas.<br><span style="font-size:0.75rem;">/${rows.length}</span></th>`;
             html += `<th class="row-header" onclick="toggleSort('row_header')">Unidade / Sala ${sortColumn === 'row_header' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
-            html += `<th onclick="toggleSort('avaliados')">Alunos<br><span style="font-size:0.75rem;">(Pres.)</span> ${sortColumn === 'avaliados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
-            html += `<th onclick="toggleSort('matriculados')">Total<br><span style="font-size:0.75rem;">Matric.</span> ${sortColumn === 'matriculados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
-            html += `<th onclick="toggleSort('participacao')">Part.<br><span style="font-size:0.75rem;">(%)</span> ${sortColumn === 'participacao' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
-
+            
             colunas.forEach(c => {
                 let displayLabel = c;
                 if (c === 'VARIACAO') displayLabel = `Evolução<br><span style="font-size:0.75rem; font-weight:normal;">(Nota)</span>`;
-                else if (c === 'VARIACAO_PART') displayLabel = `Evolução<br><span style="font-size:0.75rem; font-weight:normal;">(Particip.)</span>`;
                 else if (c.includes('|||')) displayLabel = `${c.split('|||')[0]}<br><span style="font-size:0.75rem; font-weight:normal;">${c.split('|||')[1]}</span>`;
                 html += `<th onclick="toggleSort('${c}')">${displayLabel} ${sortColumn === c ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
             });
@@ -744,10 +869,6 @@
             html += `</tr></thead><tbody>`;
 
             if (isUreView) {
-                let globalAval = 0, globalMat = 0;
-                rows.forEach(r => { globalAval += participacaoPorLinha[r].avaliados; globalMat += participacaoPorLinha[r].matriculados; });
-                let globalPart = globalMat > 0 ? (globalAval / globalMat) * 100 : 0;
-
                 let globalColTotals = {};
                 colunas.forEach(c => { 
                     globalColTotals[c] = { sumProduct: 0, totalWeight: 0, mapAval: new Map() }; 
@@ -762,15 +883,16 @@
 
                 html += `<tr style="background-color: #f3f4f6; font-weight: bold; border-bottom: 2px solid #111827;">`;
                 html += `<td colspan="2" class="row-header" style="background-color: #e5e7eb; color: #1e3a8a;">MÉDIA GLOBAL DOS FILTROS ATUAIS</td>`;
-                html += `<td style="color:#1f2937;">${globalAval}</td><td style="color:#1f2937;">${globalMat}</td><td style="color:var(--blue-info);">${globalPart.toFixed(1).replace('.',',')}%</td>`;
 
                 colunas.forEach(c => {
                     if (c === 'VARIACAO') {
                         const a1 = colunas[0]; const a2 = colunas[1]; let n1 = globalColTotals[a1] && globalColTotals[a1].totalWeight > 0 ? globalColTotals[a1].sumProduct / globalColTotals[a1].totalWeight : null; let n2 = globalColTotals[a2] && globalColTotals[a2].totalWeight > 0 ? globalColTotals[a2].sumProduct / globalColTotals[a2].totalWeight : null;
-                        if (n1 !== null && n2 !== null) { let diff = n2 - n1; html += `<td class="${diff > 0.1 ? 'bg-green' : (diff < -0.1 ? 'bg-red' : 'bg-yellow')}">${diff > 0 ? '+' : ''}${diff.toFixed(2).replace('.', ',')}</td>`; } else html += `<td class="bg-empty">-</td>`;
-                    } else if (c === 'VARIACAO_PART') {
-                        const a1 = colunas[0]; const a2 = colunas[1]; let p1 = globalColTotals[a1] ? calcPart(globalColTotals[a1].mapAval, isUreView) : null; let p2 = globalColTotals[a2] ? calcPart(globalColTotals[a2].mapAval, isUreView) : null;
-                        if (p1 !== null && p2 !== null && p1 > 0 && p2 > 0) { let diff = p2 - p1; let bg = diff > 0.5 ? 'color: var(--green);' : (diff < -0.5 ? 'color: var(--red);' : 'color: var(--yellow);'); let sinal = diff > 0 ? '+' : ''; html += `<td style="${bg} font-weight:bold;">${sinal}${diff.toFixed(1).replace('.', ',')}%</td>`; } else html += `<td class="bg-empty">-</td>`;
+                        if (n1 !== null && n2 !== null) { 
+                            let diff = n2 - n1; 
+                            let sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
+                            let form = Math.abs(diff).toFixed(2).replace('.', ',');
+                            html += `<td style="color:${diff > 0.1 ? 'var(--green)' : (diff < -0.1 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}</td>`; 
+                        } else html += `<td class="bg-empty">-</td>`;
                     } else {
                         const cell = globalColTotals[c];
                         if (cell && cell.totalWeight > 0) { const m = (cell.sumProduct / cell.totalWeight).toFixed(2); const num = parseFloat(m); html += `<td class="${num < 3 ? 'bg-red' : (num > 5 ? 'bg-green' : 'bg-yellow')}">${m.replace('.', ',')}</td>`; } else html += `<td class="bg-empty">-</td>`;
@@ -788,19 +910,18 @@
                 const rank = idx + 1; const pData = participacaoPorLinha[r];
                 html += `<tr><td style="font-weight:bold; color:var(--text-muted);">${rank}º</td>`;
                 html += `<td class="row-header" onclick="handleRowClick('${r.replace(/'/g, "\\'")}')">${r}</td>`;
-                html += `<td>${pData.avaliados}</td><td>${pData.matriculados}</td><td style="color:var(--blue-info); font-weight:bold;">${pData.participacao.toFixed(1).replace('.',',')}%</td>`;
                 
                 colunas.forEach(c => {
                     if (c === 'VARIACAO') {
                         const a1 = colunas[0]; const a2 = colunas[1];
                         let n1 = (matriz[r] && matriz[r][a1] && matriz[r][a1].totalWeight > 0) ? matriz[r][a1].sumProduct / matriz[r][a1].totalWeight : null;
                         let n2 = (matriz[r] && matriz[r][a2] && matriz[r][a2].totalWeight > 0) ? matriz[r][a2].sumProduct / matriz[r][a2].totalWeight : null;
-                        if (n1 !== null && n2 !== null) { let diff = n2 - n1; html += `<td class="${diff > 0.1 ? 'bg-green' : (diff < -0.1 ? 'bg-red' : 'bg-yellow')}">${diff > 0 ? '+' : ''}${diff.toFixed(2).replace('.', ',')}</td>`; } else html += `<td class="bg-empty">-</td>`;
-                    } else if (c === 'VARIACAO_PART') {
-                        const a1 = colunas[0]; const a2 = colunas[1];
-                        let p1 = (matriz[r] && matriz[r][a1]) ? calcPart(matriz[r][a1].mapAval, isUreView) : null;
-                        let p2 = (matriz[r] && matriz[r][a2]) ? calcPart(matriz[r][a2].mapAval, isUreView) : null;
-                        if (p1 !== null && p2 !== null && p1 > 0 && p2 > 0) { let diff = p2 - p1; let bg = diff > 0.5 ? 'color: var(--green);' : (diff < -0.5 ? 'color: var(--red);' : 'color: var(--yellow);'); let sinal = diff > 0 ? '+' : ''; html += `<td style="${bg} font-weight:bold;">${sinal}${diff.toFixed(1).replace('.', ',')}%</td>`; } else html += `<td class="bg-empty">-</td>`;
+                        if (n1 !== null && n2 !== null) { 
+                            let diff = n2 - n1; 
+                            let sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
+                            let form = Math.abs(diff).toFixed(2).replace('.', ',');
+                            html += `<td style="color:${diff > 0.1 ? 'var(--green)' : (diff < -0.1 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}</td>`; 
+                        } else html += `<td class="bg-empty">-</td>`;
                     } else {
                         const cell = matriz[r][c];
                         if (cell && cell.totalWeight > 0) {
@@ -818,7 +939,7 @@
             container.innerHTML = html + `</tbody></table>`; window.highlightSelectedRow();
         }
 
-        // --- POP-UP DETALHADO (RANKING E COMPARAÇÃO HISTÓRICA DO COMPONENTE) ---
+        // --- POP-UP RELATÓRIO PONDERADO ---
         function calculateRanking(notaClique, entidadeAlvo, idEscolaContext, colKey, isUreView) {
             const clickedMediaNum = parseFloat(notaClique);
             document.getElementById('modal-nota').innerText = clickedMediaNum.toFixed(2).replace('.', ',');
@@ -826,30 +947,32 @@
             let contextTitle = (currentViewMode === 'eval' || currentViewMode === 'single_component' || currentViewMode === 'compare') ? colKey.split('|||')[0] + " - " + colKey.split('|||')[1] : "Componente: " + colKey;
             document.getElementById('modal-desc').innerText = `${entidadeAlvo} • ${contextTitle}`;
 
-            const rowKeyField = isUreView ? 'escola' : 'turma_nome';
-            const rMap = {};
+            // Exibir filtros ativos no pop-up
+            const getCheckVals = key => { const vals = getSelectedCheckboxes(key); return vals.length === 0 ? 'Todos' : vals.join(', '); };
+            const getSelectVal = id => { const el = document.getElementById(id); return el.options[el.selectedIndex] ? el.options[el.selectedIndex].text : ''; };
+            
+            let filterStr = `<strong>Filtros Aplicados:</strong> Escola(s): ${getCheckVals('escola')} | Comp(s): ${getCheckVals('componente')} | Classe: ${getCheckVals('tipo_classe')} | Ensino: ${getCheckVals('tipo_ensino')}`;
+            if(currentViewMode === 'single_component') filterStr += ` | <strong>Foco:</strong> ${getSelectVal('sub-filter-comp')}`;
+            if(currentViewMode === 'single_eval') filterStr += ` | <strong>Foco:</strong> ${getSelectVal('sub-filter-aval').replace('|||', ' - ')}`;
+            if(currentViewMode === 'compare') filterStr += ` | <strong>Foco:</strong> ${getSelectVal('compare-filter-componente')}`;
+            document.getElementById('modal-filter-info').innerHTML = filterStr;
+
+            // RANKING NO CONTEXTO ATUAL
+            const rowKeyField = isUreView ? 'escola' : 'turma_nome'; const rMap = {};
             activeData.forEach(d => {
                 const c = (currentViewMode === 'eval' || currentViewMode === 'single_component' || currentViewMode === 'compare') ? `${d.aval_bimestre}|||${d.aval_nome}` : d.componente;
                 if (c === colKey) {
-                    const r = d[rowKeyField]; if (!rMap[r]) rMap[r] = { sumProduct: 0, totalWeight: 0, id_escola: d.id_escola };
+                    const r = d[rowKeyField]; if (!rMap[r]) rMap[r] = { sumProduct: 0, totalWeight: 0 };
                     rMap[r].sumProduct += d.nota * d.avaliados * d.peso; rMap[r].totalWeight += d.avaliados * d.peso;
                 }
             });
 
-            const ureRankList = Object.keys(rMap).map(k => ({ id: k, media: rMap[k].totalWeight > 0 ? (rMap[k].sumProduct / rMap[k].totalWeight) : 0 })).sort((a,b) => b.media - a.media);
-            const rankUrePos = ureRankList.findIndex(x => x.id === entidadeAlvo) + 1;
-            document.getElementById('modal-rank-ure').innerText = rankUrePos > 0 ? `${rankUrePos}º lugar de ${ureRankList.length} listados` : 'Sem dados';
+            const rankList = Object.keys(rMap).map(k => ({ id: k, media: rMap[k].totalWeight > 0 ? (rMap[k].sumProduct / rMap[k].totalWeight) : 0 })).sort((a,b) => b.media - a.media);
+            const rankPos = rankList.findIndex(x => x.id === entidadeAlvo) + 1;
+            document.getElementById('modal-rank-context').innerText = rankPos > 0 ? `${rankPos}º lugar de ${rankList.length} listados no filtro` : 'Sem dados';
 
-            let rankUeText = "N/A (Visão Geral por Escolas)";
-            if (rowKeyField === 'turma_nome') {
-                const ueRankList = Object.keys(rMap).filter(k => rMap[k].id_escola == idEscolaContext).map(k => ({ id: k, media: rMap[k].totalWeight > 0 ? (rMap[k].sumProduct / rMap[k].totalWeight) : 0 })).sort((a,b) => b.media - a.media);
-                const rankUePos = ueRankList.findIndex(x => x.id === entidadeAlvo) + 1;
-                rankUeText = rankUePos > 0 ? `${rankUePos}º lugar de ${ueRankList.length} turmas` : 'Sem dados';
-            }
-            document.getElementById('modal-rank-ue').innerText = rankUeText;
-
-            const subset = filteredData.filter(d => d[rowKeyField] === entidadeAlvo);
-            const compGroups = {};
+            // TABELA DE EVOLUÇÃO
+            const subset = filteredData.filter(d => d[rowKeyField] === entidadeAlvo); const compGroups = {};
             subset.forEach(d => {
                 const key = `${d.aval_bimestre} - ${d.aval_nome}`;
                 if(!compGroups[key]) compGroups[key] = { sumProduct: 0, totalWeight: 0, headcount: 0 };
@@ -864,11 +987,15 @@
             else {
                 sortedKeys.forEach(k => {
                     const group = compGroups[k]; if(group.totalWeight === 0) return;
-                    const mNum = (group.sumProduct / group.totalWeight); const diff = mNum - clickedMediaNum;
-                    const diffText = diff > 0 ? `+${diff.toFixed(2)}` : diff.toFixed(2);
+                    const mNum = (group.sumProduct / group.totalWeight); 
+                    const diff = mNum - clickedMediaNum;
+                    
+                    const sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
+                    const diffText = sinal + Math.abs(diff).toFixed(2).replace('.', ',');
+
                     tableHtml += `<tr><td style="text-align:left; font-weight:600;">${k}</td><td>${group.headcount}</td>
                                   <td class="${mNum < 3 ? 'bg-red' : (mNum > 5 ? 'bg-green' : 'bg-yellow')}" style="font-weight:bold;">${mNum.toFixed(2).replace('.', ',')}</td>
-                                  <td style="${diff > 0.1 ? 'color:var(--green);' : (diff < -0.1 ? 'color:var(--red);' : 'color:var(--yellow);')} font-weight:bold;">${diffText.replace('.', ',')}</td></tr>`;
+                                  <td style="${diff > 0.1 ? 'color:var(--green);' : (diff < -0.1 ? 'color:var(--red);' : 'color:var(--yellow);')} font-weight:bold;">${diffText}</td></tr>`;
                 });
             }
             document.getElementById('modal-comparativo-container').innerHTML = tableHtml + `</tbody></table>`; openModal();
@@ -887,6 +1014,7 @@
             chartsInstance.evol = new Chart(ctxEvolucao, { type: 'line', data: { labels: evolucaoData.map(d => d.label), datasets: [{ label: 'Desempenho Histórico Cronológico', data: evolucaoData.map(d => d.media), borderColor: '#10b981', fill: true, backgroundColor: 'rgba(16, 185, 129, 0.08)' }] }, options: { responsive: true, maintainAspectRatio: false } });
         }
 
+        // --- STARTUP ---
         async function initDashboard() {
             showLoading('Buscando perfil...'); document.getElementById('login-section').style.display = 'none'; document.getElementById('dashboard-section').style.display = 'block';
             const { data: profile, error } = await supabaseClient.from('usuarios_escolas').select('*').eq('email', currentUser.email).single();
