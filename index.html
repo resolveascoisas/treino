@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Educacional Avançado</title>
+    <title>Avaliações URE Avaré</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -193,9 +193,9 @@
     <div id="disclaimer-modal">
         <div class="modal-content">
             <h2>⚠️ Versão Beta</h2>
-            <p>Este painel encontra-se em fase de <strong>testes e homologação (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
+            <p>Este painel encontra-se em fase de <strong>testes (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
             <p>As notas apresentadas podem diferir dos painéis disponibilizados no BI do <strong>Escola Total</strong> e nas tabelas oficiais publicadas pela URE. Isso ocorre porque o método de cálculo aplicado aqui (Média Ponderada Real Bidimensional) difere intencionalmente para padronizar e aprofundar as análises.</p>
-            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Diretoria de Ensino.</p>
+            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Unidade Regional de Ensino de Avaré.</p>
             <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="closeDisclaimer()">Ciente, acessar painel</button>
         </div>
     </div>
@@ -219,7 +219,7 @@
     <div id="login-section">
         <div class="login-box">
             <img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='">
-            <div class="input-group"><label>E-mail Institucional</label><input type="email" id="email" placeholder="exemplo@ure.avare"></div>
+            <div class="input-group"><label>Nome de usuário</label><input type="email" id="email" placeholder="exemplo@ure.avare"></div>
             <div class="input-group"><label>Senha</label><input type="password" id="password" placeholder="••••••••"></div>
             <button class="btn" onclick="handleLogin()">Entrar</button>
             <div id="login-error">Credenciais inválidas. Tente novamente.</div>
@@ -306,7 +306,7 @@
 
             <div class="cards-grid">
                 <div class="card">
-                    <h3>Média Ponderada Real</h3>
+                    <h3>Média do filtro</h3>
                     <div class="value" id="card-media-geral">-</div>
                 </div>
                 <div class="card">
@@ -314,7 +314,7 @@
                     <div id="card-melhor-disc">-</div>
                 </div>
                 <div class="card">
-                    <h3>Oportunidades de Melhoria</h3>
+                    <h3>Atenção (Componentes)</h3>
                     <div id="card-pior-disc">-</div>
                 </div>
                 <div class="card">
@@ -322,7 +322,7 @@
                     <div id="card-melhor-entidade">-</div>
                 </div>
                 <div class="card">
-                    <h3>Oportunidades (<span id="label-pior-ent">Entidades</span>)</h3>
+                    <h3>Atenção (<span id="label-pior-ent">Entidades</span>)</h3>
                     <div id="card-pior-entidade">-</div>
                 </div>
             </div>
@@ -995,7 +995,7 @@
                 compGroups[key].sumProduct += d.nota * d.avaliados * d.peso; compGroups[key].totalWeight += d.avaliados * d.peso; compGroups[key].headcount += d.avaliados;
             });
 
-            let tableHtml = `<table class="modal-table"><thead><tr><th>Avaliação de Referência</th><th>Alunos</th><th>Média Ponderada Real</th><th>Evolução (vs Atual)</th></tr></thead><tbody>`;
+            let tableHtml = `<table class="modal-table"><thead><tr><th>Avaliação de Referência</th><th>Alunos</th><th>Média do filtro</th><th>Evolução (vs Atual)</th></tr></thead><tbody>`;
             const sortedKeys = Object.keys(compGroups).sort();
             if(sortedKeys.length === 0) tableHtml += `<tr><td colspan="4">Sem registros complementares.</td></tr>`;
             else {
@@ -1034,7 +1034,7 @@
             const { data: profile, error } = await supabaseClient.from('usuarios_escolas').select('*').eq('email', currentUser.email).single();
             if (error || !profile) { alert("Perfil não identificado."); handleLogout(); return; }
             userProfile = profile; document.getElementById('user-email').innerText = profile.email;
-            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Diretoria de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
+            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Unidade Regional de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
             else { document.getElementById('dash-title').innerText = profile.nome_escola; document.getElementById('user-role-label').innerText = "Gestão Escolar"; document.getElementById('filter-escola-container').style.display = 'none'; }
             await loadAndJoinData();
         }
