@@ -61,7 +61,7 @@
         #compare-filters select { padding: 0.4rem; border-radius: 4px; border: 1px solid var(--border); font-weight: 500; }
 
         /* --- LOGIN SECTION --- */
-        #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); }
+        #login-section { display: flex; justify-content: center; align-items: center; height: 100vh; background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 1rem;}
         .login-box { background: var(--card-bg); padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
         .login-box img { max-width: 150px; margin-bottom: 1.5rem; }
         .input-group { margin-bottom: 1rem; text-align: left; }
@@ -157,6 +157,57 @@
         #disclaimer-modal h2 { margin-bottom: 1rem; color: var(--text-main); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
         #disclaimer-modal p { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 1rem; text-align: justify; }
 
+        /* ========================================================
+           RESPONSIVIDADE: OTIMIZAÇÃO PARA SMARTPHONES E TABLETS 
+           ======================================================== */
+        @media (max-width: 900px) { 
+            .charts-grid { grid-template-columns: 1fr; } 
+        }
+
+        @media (max-width: 768px) {
+            /* Header */
+            header { flex-direction: column; text-align: center; gap: 1rem; padding: 1rem; }
+            .header-left { flex-direction: column; gap: 0.5rem; }
+            .header-right { flex-direction: column; width: 100%; gap: 0.8rem; }
+            .user-info { margin-right: 0; text-align: center; width: 100%; }
+            .btn-print, .btn { width: 100%; margin-right: 0; }
+            
+            /* Container geral */
+            .container { padding: 1rem; }
+            
+            /* Filtros */
+            .filters-grid { grid-template-columns: 1fr; }
+            .filter-item { width: 100%; }
+            .btn-clear { margin-top: 0.5rem; }
+
+            /* Toggles e Botões de Visão */
+            .view-toggles { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
+            .btn-toggle { width: 100%; margin: 0; text-align: center; }
+            .sub-filter { width: 100%; margin: 0; }
+            
+            /* Filtros de Comparação */
+            #compare-filters { flex-direction: column; align-items: stretch; text-align: left; padding: 1rem; gap: 0.8rem; }
+            #compare-filters select, #compare-filters label { width: 100%; margin-left: 0 !important; }
+            #compare-filters span { text-align: center; display: block; margin: 0.5rem 0; }
+
+            /* Tabela e Seleção */
+            #selected-row-indicator { flex-direction: column; gap: 0.8rem; text-align: center; }
+            #selected-row-indicator .btn { width: 100%; }
+            .table-container { padding: 1rem; border-radius: 6px; }
+            table.heatmap { font-size: 0.75rem; }
+            table.heatmap .row-header { min-width: 120px; font-size: 0.75rem; }
+            table.heatmap th, table.heatmap td { padding: 0.4rem 0.2rem; }
+
+            /* Modais */
+            .modal-content { padding: 1.5rem; width: 95%; max-height: 85vh; }
+            .modal-table th, .modal-table td { padding: 0.4rem; font-size: 0.7rem; }
+            
+            /* Login & Disclaimer */
+            .login-box { padding: 2rem 1.5rem; margin: 1rem; }
+            #disclaimer-modal .modal-content { padding: 1.5rem; }
+            #disclaimer-modal h2 { font-size: 1.2rem; }
+        }
+
         /* --- MODO IMPRESSÃO OTIMIZADO --- */
         @media print {
             @page { size: landscape; margin: 10mm; } 
@@ -182,8 +233,6 @@
             .bg-yellow { background-color: #facc15 !important; color: black !important; }
             .bg-green { background-color: #10b981 !important; color: white !important; }
         }
-
-        @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -361,7 +410,7 @@
         
         let currentViewMode = 'eval'; 
         let selectedRowEntity = null; 
-        let sortColumn = 'media_geral'; // Ordenação padrão inicial igual a imagem
+        let sortColumn = 'media_geral'; 
         let sortDirection = 'desc'; 
 
         // --- DISCLAIMER LOGIC ---
@@ -560,6 +609,7 @@
         }
 
         function populateFilters() {
+            // Gerar Checkboxes
             const buildCheckboxes = (filterKey, values) => {
                 const container = document.querySelector(`.multi-select[data-filter="${filterKey}"] .select-options`);
                 if(!container) return;
@@ -578,6 +628,7 @@
             buildCheckboxes('tipo_classe', getUniqueValues(globalData, 'tipo_classe'));
             buildCheckboxes('tipo_ensino', getUniqueValues(globalData, 'tipo_ensino'));
 
+            // Selects Simples
             const addOptions = (selectId, values) => {
                 const select = document.getElementById(selectId);
                 if(selectId === 'compare-filter-componente') select.innerHTML = '<option value="GERAL">Geral</option>';
@@ -853,6 +904,9 @@
             let html = `<table class="heatmap"><thead><tr>`;
             html += `<th>Clas.<br><span style="font-size:0.75rem;">/${rows.length}</span></th>`;
             html += `<th class="row-header" onclick="toggleSort('row_header')">Unidade / Sala ${sortColumn === 'row_header' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
+            html += `<th onclick="toggleSort('avaliados')">Alunos<br><span style="font-size:0.75rem;">(Pres.)</span> ${sortColumn === 'avaliados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
+            html += `<th onclick="toggleSort('matriculados')">Total<br><span style="font-size:0.75rem;">Matric.</span> ${sortColumn === 'matriculados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
+            html += `<th onclick="toggleSort('participacao')">Part.<br><span style="font-size:0.75rem;">(%)</span> ${sortColumn === 'participacao' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
 
             colunas.forEach(c => {
                 let displayLabel = c;
@@ -865,6 +919,10 @@
             html += `</tr></thead><tbody>`;
 
             if (isUreView) {
+                let globalAval = 0, globalMat = 0;
+                rows.forEach(r => { globalAval += participacaoPorLinha[r].avaliados; globalMat += participacaoPorLinha[r].matriculados; });
+                let globalPart = globalMat > 0 ? (globalAval / globalMat) * 100 : 0;
+
                 let globalColTotals = {};
                 colunas.forEach(c => { 
                     globalColTotals[c] = { sumProduct: 0, totalWeight: 0, mapAval: new Map() }; 
@@ -879,6 +937,7 @@
 
                 html += `<tr style="background-color: #f3f4f6; font-weight: bold; border-bottom: 2px solid #111827;">`;
                 html += `<td colspan="2" class="row-header" style="background-color: #e5e7eb; color: #1e3a8a;">MÉDIA GLOBAL DOS FILTROS ATUAIS</td>`;
+                html += `<td style="color:#1f2937;">${globalAval}</td><td style="color:#1f2937;">${globalMat}</td><td style="color:var(--blue-info);">${globalPart.toFixed(1).replace('.',',')}%</td>`;
 
                 colunas.forEach(c => {
                     if (c === 'VARIACAO') {
@@ -911,9 +970,10 @@
             }
 
             rows.forEach((r, idx) => {
-                const rank = idx + 1;
+                const rank = idx + 1; const pData = participacaoPorLinha[r];
                 html += `<tr><td style="font-weight:bold; color:var(--text-muted);">${rank}º</td>`;
                 html += `<td class="row-header" onclick="handleRowClick('${r.replace(/'/g, "\\'")}')">${r}</td>`;
+                html += `<td>${pData.avaliados}</td><td>${pData.matriculados}</td><td style="color:var(--blue-info); font-weight:bold;">${pData.participacao.toFixed(1).replace('.',',')}%</td>`;
                 
                 colunas.forEach(c => {
                     if (c === 'VARIACAO') {
