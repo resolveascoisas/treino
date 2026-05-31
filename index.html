@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Educacional Avançado</title>
+    <title>Dashboard Avaliações - URE Avaré</title>
     
     <!-- Supabase JS & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -196,9 +196,9 @@
     <div id="disclaimer-modal">
         <div class="modal-content">
             <h2>⚠️ Versão Beta</h2>
-            <p>Este painel encontra-se em fase de <strong>testes e homologação (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
+            <p>Este painel encontra-se em fase de <strong>testes (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
             <p>As notas apresentadas podem diferir dos painéis disponibilizados no BI do <strong>Escola Total</strong> e nas tabelas oficiais publicadas pela URE. Isso ocorre porque o método de cálculo aplicado aqui (Média Ponderada Real Bidimensional) difere intencionalmente para padronizar e aprofundar as análises.</p>
-            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Diretoria de Ensino.</p>
+            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Unidade Regional de Ensino.</p>
             <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="closeDisclaimer()">Ciente, acessar painel</button>
         </div>
     </div>
@@ -1020,7 +1020,7 @@
             const { data: profile, error } = await supabaseClient.from('usuarios_escolas').select('*').eq('email', currentUser.email).single();
             if (error || !profile) { alert("Perfil não identificado."); handleLogout(); return; }
             userProfile = profile; document.getElementById('user-email').innerText = profile.email;
-            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Diretoria de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
+            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Unidade Regional de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
             else { document.getElementById('dash-title').innerText = profile.nome_escola; document.getElementById('user-role-label').innerText = "Gestão Escolar"; document.getElementById('filter-escola-container').style.display = 'none'; }
             await loadAndJoinData();
         }
