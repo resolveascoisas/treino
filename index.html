@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Avaliações - URE Avaré</title>
+    <title>Dashboard Educacional Avançado</title>
     
-    <!-- Supabase JS & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -189,21 +188,18 @@
 </head>
 <body>
 
-    <!-- Overlay Loading -->
     <div id="loading-overlay"><div class="spinner"></div><h3 style="margin-top: 1rem; color: var(--text-main);" id="loading-text">Carregando...</h3></div>
 
-    <!-- Modal Disclaimer (Versão Beta) -->
     <div id="disclaimer-modal">
         <div class="modal-content">
             <h2>⚠️ Versão Beta</h2>
-            <p>Este painel encontra-se em fase de <strong>testes (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
+            <p>Este painel encontra-se em fase de <strong>testes e homologação (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
             <p>As notas apresentadas podem diferir dos painéis disponibilizados no BI do <strong>Escola Total</strong> e nas tabelas oficiais publicadas pela URE. Isso ocorre porque o método de cálculo aplicado aqui (Média Ponderada Real Bidimensional) difere intencionalmente para padronizar e aprofundar as análises.</p>
-            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Unidade Regional de Ensino.</p>
+            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado como resultado oficial da Diretoria de Ensino.</p>
             <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="closeDisclaimer()">Ciente, acessar painel</button>
         </div>
     </div>
 
-    <!-- Modal Pop-up (Relatório) -->
     <div id="ranking-modal">
         <div class="modal-content">
             <span class="modal-close" onclick="closeModal()">&times;</span>
@@ -220,7 +216,6 @@
         </div>
     </div>
 
-    <!-- Login -->
     <div id="login-section">
         <div class="login-box">
             <img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='">
@@ -231,7 +226,6 @@
         </div>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboard-section">
         <header>
             <div class="header-left"><img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='"><h1 id="dash-title">Painel de Desempenho</h1></div>
@@ -244,13 +238,11 @@
 
         <div class="container">
             
-            <!-- HEADER EXCLUSIVO DE IMPRESSÃO -->
             <div id="print-header">
                 <h3>Parâmetros do Relatório Gerado</h3>
                 <p id="print-filters-text"></p>
             </div>
 
-            <!-- Filtros Superiores com Checkboxes -->
             <div class="filters-wrapper">
                 <div class="filters-grid">
                     <div class="filter-item" id="filter-escola-container">
@@ -287,7 +279,6 @@
                 </div>
             </div>
 
-            <!-- Alternância de Modos da Tabela -->
             <div class="view-toggles">
                 <button class="btn btn-toggle active" id="btn-view-eval" onclick="setViewMode('eval')">📋 Histórico (Geral)</button>
                 <button class="btn btn-toggle" id="btn-view-comp" onclick="setViewMode('component')">📊 Por Componentes</button>
@@ -299,7 +290,6 @@
                 <select id="sub-filter-aval" class="sub-filter" onchange="processViewAndRender()"></select>
             </div>
 
-            <!-- Filtros Específicos para "Comparar Desempenhos" -->
             <div id="compare-filters">
                 <label style="font-weight: 600; color: var(--primary);">Analisar Evolução:</label>
                 <select id="comp-aval-1" onchange="processViewAndRender()"></select>
@@ -309,13 +299,11 @@
                 <select id="compare-filter-componente" onchange="processViewAndRender()"></select>
             </div>
 
-            <!-- Indicador Ativo de Filtro por Linha -->
             <div id="selected-row-indicator">
                 <span id="selected-row-text">Filtrando gráficos para a sala...</span>
                 <button class="btn" style="padding:0.25rem 0.5rem; font-size:0.8rem; background:#ef4444;" onclick="resetRowSelection()">Remover Filtro ✕</button>
             </div>
 
-            <!-- CARDS C/ PÓDIO -->
             <div class="cards-grid">
                 <div class="card">
                     <h3>Média Ponderada Real</h3>
@@ -358,7 +346,6 @@
         </div>
     </div>
 
-    <!-- LÓGICA JAVASCRIPT GLOBAL -->
     <script>
         const supabaseUrl = 'https://kmplasayzhtjoelxnvif.supabase.co';
         const supabaseKey = 'sb_publishable_24GErsvesucjCS2GKZkBUQ_8xMMXuoh';
@@ -374,7 +361,7 @@
         
         let currentViewMode = 'eval'; 
         let selectedRowEntity = null; 
-        let sortColumn = 'media_geral'; 
+        let sortColumn = 'media_geral'; // Ordenação padrão inicial igual a imagem
         let sortDirection = 'desc'; 
 
         // --- DISCLAIMER LOGIC ---
@@ -800,7 +787,7 @@
             if (currentViewMode === 'compare') {
                 const a1 = document.getElementById('comp-aval-1').value; const a2 = document.getElementById('comp-aval-2').value;
                 colunas = []; if (a1) colunas.push(a1); if (a2 && a2 !== a1) colunas.push(a2); 
-                if (colunas.length === 2) { colunas.push('VARIACAO'); }
+                if (colunas.length === 2) { colunas.push('VARIACAO'); colunas.push('VARIACAO_PART'); }
             }
 
             const matriz = {}; const rowTotalizador = {}; const participacaoPorLinha = {};
@@ -848,6 +835,14 @@
                     let n1B = (matriz[b] && matriz[b][a1] && matriz[b][a1].totalWeight > 0) ? matriz[b][a1].sumProduct / matriz[b][a1].totalWeight : null;
                     let n2B = (matriz[b] && matriz[b][a2] && matriz[b][a2].totalWeight > 0) ? matriz[b][a2].sumProduct / matriz[b][a2].totalWeight : null;
                     valA = (n1A !== null && n2A !== null) ? (n2A - n1A) : -999; valB = (n1B !== null && n2B !== null) ? (n2B - n1B) : -999;
+                } else if (sortColumn === 'VARIACAO_PART') {
+                    const a1 = colunas[0]; const a2 = colunas[1];
+                    let p1A = (matriz[a] && matriz[a][a1]) ? calcPart(matriz[a][a1].mapAval, isUreView) : null;
+                    let p2A = (matriz[a] && matriz[a][a2]) ? calcPart(matriz[a][a2].mapAval, isUreView) : null;
+                    let p1B = (matriz[b] && matriz[b][a1]) ? calcPart(matriz[b][a1].mapAval, isUreView) : null;
+                    let p2B = (matriz[b] && matriz[b][a2]) ? calcPart(matriz[b][a2].mapAval, isUreView) : null;
+                    valA = (p1A !== null && p2A !== null && p1A > 0 && p2A > 0) ? (p2A - p1A) : -999;
+                    valB = (p1B !== null && p2B !== null && p1B > 0 && p2B > 0) ? (p2B - p1B) : -999;
                 } else {
                     valA = (matriz[a] && matriz[a][sortColumn] && matriz[a][sortColumn].totalWeight > 0) ? (matriz[a][sortColumn].sumProduct / matriz[a][sortColumn].totalWeight) : -1;
                     valB = (matriz[b] && matriz[b][sortColumn] && matriz[b][sortColumn].totalWeight > 0) ? (matriz[b][sortColumn].sumProduct / matriz[b][sortColumn].totalWeight) : -1;
@@ -858,10 +853,11 @@
             let html = `<table class="heatmap"><thead><tr>`;
             html += `<th>Clas.<br><span style="font-size:0.75rem;">/${rows.length}</span></th>`;
             html += `<th class="row-header" onclick="toggleSort('row_header')">Unidade / Sala ${sortColumn === 'row_header' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
-            
+
             colunas.forEach(c => {
                 let displayLabel = c;
                 if (c === 'VARIACAO') displayLabel = `Evolução<br><span style="font-size:0.75rem; font-weight:normal;">(Nota)</span>`;
+                else if (c === 'VARIACAO_PART') displayLabel = `Evolução<br><span style="font-size:0.75rem; font-weight:normal;">(Particip.)</span>`;
                 else if (c.includes('|||')) displayLabel = `${c.split('|||')[0]}<br><span style="font-size:0.75rem; font-weight:normal;">${c.split('|||')[1]}</span>`;
                 html += `<th onclick="toggleSort('${c}')">${displayLabel} ${sortColumn === c ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
             });
@@ -893,6 +889,14 @@
                             let form = Math.abs(diff).toFixed(2).replace('.', ',');
                             html += `<td style="color:${diff > 0.1 ? 'var(--green)' : (diff < -0.1 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}</td>`; 
                         } else html += `<td class="bg-empty">-</td>`;
+                    } else if (c === 'VARIACAO_PART') {
+                        const a1 = colunas[0]; const a2 = colunas[1]; let p1 = globalColTotals[a1] ? calcPart(globalColTotals[a1].mapAval, isUreView) : null; let p2 = globalColTotals[a2] ? calcPart(globalColTotals[a2].mapAval, isUreView) : null;
+                        if (p1 !== null && p2 !== null && p1 > 0 && p2 > 0) { 
+                            let diff = p2 - p1; 
+                            let sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
+                            let form = Math.abs(diff).toFixed(1).replace('.', ',');
+                            html += `<td style="color:${diff > 0.5 ? 'var(--green)' : (diff < -0.5 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}%</td>`; 
+                        } else html += `<td class="bg-empty">-</td>`;
                     } else {
                         const cell = globalColTotals[c];
                         if (cell && cell.totalWeight > 0) { const m = (cell.sumProduct / cell.totalWeight).toFixed(2); const num = parseFloat(m); html += `<td class="${num < 3 ? 'bg-red' : (num > 5 ? 'bg-green' : 'bg-yellow')}">${m.replace('.', ',')}</td>`; } else html += `<td class="bg-empty">-</td>`;
@@ -907,7 +911,7 @@
             }
 
             rows.forEach((r, idx) => {
-                const rank = idx + 1; const pData = participacaoPorLinha[r];
+                const rank = idx + 1;
                 html += `<tr><td style="font-weight:bold; color:var(--text-muted);">${rank}º</td>`;
                 html += `<td class="row-header" onclick="handleRowClick('${r.replace(/'/g, "\\'")}')">${r}</td>`;
                 
@@ -921,6 +925,16 @@
                             let sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
                             let form = Math.abs(diff).toFixed(2).replace('.', ',');
                             html += `<td style="color:${diff > 0.1 ? 'var(--green)' : (diff < -0.1 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}</td>`; 
+                        } else html += `<td class="bg-empty">-</td>`;
+                    } else if (c === 'VARIACAO_PART') {
+                        const a1 = colunas[0]; const a2 = colunas[1];
+                        let p1 = (matriz[r] && matriz[r][a1]) ? calcPart(matriz[r][a1].mapAval, isUreView) : null;
+                        let p2 = (matriz[r] && matriz[r][a2]) ? calcPart(matriz[r][a2].mapAval, isUreView) : null;
+                        if (p1 !== null && p2 !== null && p1 > 0 && p2 > 0) { 
+                            let diff = p2 - p1; 
+                            let sinal = diff > 0 ? '▲ ' : (diff < 0 ? '▼ ' : '');
+                            let form = Math.abs(diff).toFixed(1).replace('.', ',');
+                            html += `<td style="color:${diff > 0.5 ? 'var(--green)' : (diff < -0.5 ? 'var(--red)' : 'var(--yellow)')}; font-weight:bold;">${sinal}${form}%</td>`; 
                         } else html += `<td class="bg-empty">-</td>`;
                     } else {
                         const cell = matriz[r][c];
@@ -939,7 +953,7 @@
             container.innerHTML = html + `</tbody></table>`; window.highlightSelectedRow();
         }
 
-        // --- POP-UP RELATÓRIO PONDERADO ---
+        // --- POP-UP RELATÓRIO PONDERADO (RANKING ÚNICO) ---
         function calculateRanking(notaClique, entidadeAlvo, idEscolaContext, colKey, isUreView) {
             const clickedMediaNum = parseFloat(notaClique);
             document.getElementById('modal-nota').innerText = clickedMediaNum.toFixed(2).replace('.', ',');
@@ -957,7 +971,7 @@
             if(currentViewMode === 'compare') filterStr += ` | <strong>Foco:</strong> ${getSelectVal('compare-filter-componente')}`;
             document.getElementById('modal-filter-info').innerHTML = filterStr;
 
-            // RANKING NO CONTEXTO ATUAL
+            // RANKING NO CONTEXTO ATUAL (ACTIVE DATA)
             const rowKeyField = isUreView ? 'escola' : 'turma_nome'; const rMap = {};
             activeData.forEach(d => {
                 const c = (currentViewMode === 'eval' || currentViewMode === 'single_component' || currentViewMode === 'compare') ? `${d.aval_bimestre}|||${d.aval_nome}` : d.componente;
@@ -1020,7 +1034,7 @@
             const { data: profile, error } = await supabaseClient.from('usuarios_escolas').select('*').eq('email', currentUser.email).single();
             if (error || !profile) { alert("Perfil não identificado."); handleLogout(); return; }
             userProfile = profile; document.getElementById('user-email').innerText = profile.email;
-            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Unidade Regional de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
+            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "Diretoria de Ensino de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor Regional"; } 
             else { document.getElementById('dash-title').innerText = profile.nome_escola; document.getElementById('user-role-label').innerText = "Gestão Escolar"; document.getElementById('filter-escola-container').style.display = 'none'; }
             await loadAndJoinData();
         }
