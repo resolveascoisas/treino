@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Educacional</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e3a8a; /* Azul escuro institucional */
+            --secondary: #3b82f6;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- LOADING OVERLAY --- */
+        #loading-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- LOGIN SECTION --- */
+        #login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        .login-box {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .login-box img {
+            max-width: 150px;
+            margin-bottom: 1.5rem;
+        }
+        .input-group {
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: var(--secondary); }
+        #login-error {
+            color: var(--danger);
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        /* --- DASHBOARD SECTION --- */
+        #dashboard-section {
+            display: none;
+        }
+        header {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .header-left img { max-height: 50px; }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .user-info { font-size: 0.9rem; color: var(--text-muted); text-align: right; }
+        .user-info strong { color: var(--text-main); display: block; }
+        
+        .container {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* FILTROS */
+        .filters-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        .filter-item select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        /* CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--primary);
+        }
+        .card h3 { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; }
+        .card .value { font-size: 2rem; font-weight: bold; margin-top: 0.5rem; color: var(--primary); }
+        .card .desc { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        /* CHARTS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .chart-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            height: 350px;
+        }
+        
+        /* TABLES */
+        .table-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th { background-color: #f9fafb; font-weight: 600; color: var(--text-muted); }
+        tr:hover { background-color: #f9fafb; }
+
+        @media (max-width: 900px) {
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <h3 style="margin-top: 1rem; color: var(--text-main);" id="loading-text">Carregando...</h3>
+    </div>
+
+    <div id="login-section">
+        <div class="login-box">
+            <img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='">
+            <div class="input-group">
+                <label for="email">E-mail Institucional</label>
+                <input type="email" id="email" placeholder="exemplo@ure.avare">
+            </div>
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            <button class="btn" onclick="handleLogin()">Entrar</button>
+            <div id="login-error">Credenciais inválidas. Tente novamente.</div>
+        </div>
+    </div>
+
+    <div id="dashboard-section">
+        <header>
+            <div class="header-left">
+                <img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='">
+                <h1 id="dash-title">Painel de Desempenho</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <strong id="user-email">usuario@ure.avare</strong>
+                    <span id="user-role-label">Carregando perfil...</span>
+                </div>
+                <button class="btn" style="width: auto; padding: 0.5rem 1rem;" onclick="handleLogout()">Sair</button>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="filters-container">
+                <div class="filter-item" id="filter-escola-container">
+                    <label>Escola</label>
+                    <select id="filter-escola" onchange="applyFilters()"><option value="ALL">Todas</option></select>
+                </div>
+                <div class="filter-item">
+                    <label>Bimestre</label>
+                    <select id="filter-bimestre" onchange="applyFilters()"><option value="ALL">Todos</option></select>
+                </div>
+                <div class="filter-item">
+                    <label>Componente</label>
+                    <select id="filter-componente" onchange="applyFilters()"><option value="ALL">Todos</option></select>
+                </div>
+                <div class="filter-item">
+                    <label>Tipo Avaliação</label>
+                    <select id="filter-tipo-aval" onchange="applyFilters()"><option value="ALL">Todos</option></select>
+                </div>
+                <div class="filter-item">
+                    <label>Tipo Classe</label>
+                    <select id="filter-tipo-classe" onchange="applyFilters()"><option value="ALL">Todos</option></select>
+                </div>
+                <div class="filter-item">
+                    <label>Tipo Ensino</label>
+                    <select id="filter-tipo-ensino" onchange="applyFilters()"><option value="ALL">Todos</option></select>
+                </div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <h3>Média Geral</h3>
+                    <div class="value" id="card-media-geral">-</div>
+                    <div class="desc" id="card-avaliados-geral">0 avaliados</div>
+                </div>
+                <div class="card">
+                    <h3>Melhor Disciplina</h3>
+                    <div class="value" id="card-melhor-disc" style="color: var(--success);">-</div>
+                    <div class="desc" id="card-melhor-nota">-</div>
+                </div>
+                <div class="card">
+                    <h3>Disciplina com Maior Defasagem</h3>
+                    <div class="value" id="card-pior-disc" style="color: var(--danger);">-</div>
+                    <div class="desc" id="card-pior-nota">-</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <canvas id="chartComponentes"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartEvolucao"></canvas>
+                </div>
+                <div class="chart-container">
+                    <canvas id="chartRanking"></canvas>
+                </div>
+                <div class="chart-container" id="container-chart-escolas">
+                    <canvas id="chartEscolas"></canvas>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3 style="margin-bottom: 1rem;">Detalhamento de Turmas</h3>
+                <table id="data-table">
+                    <thead>
+                        <tr>
+                            <th>Escola</th>
+                            <th>Turma</th>
+                            <th>Componente</th>
+                            <th>Avaliação</th>
+                            <th>Bimestre</th>
+                            <th>Avaliados</th>
+                            <th>Nota Média</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURAÇÃO SUPABASE
+        const supabaseUrl = 'https://kmplasayzhtjoelxnvif.supabase.co';
+        const supabaseKey = 'sb_publishable_24GErsvesucjCS2GKZkBUQ_8xMMXuoh';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // ESTADO GLOBAL
+        let currentUser = null;
+        let userProfile = null;
+        let globalData = []; // JOIN completo das 3 tabelas
+        let filteredData = []; // Dados filtrados para renderização
+        let chartsInstance = {}; // Instâncias do Chart.js para destruição/recriação
+
+        // --- SISTEMA DE UI ---
+        function showLoading(text = 'Carregando...') {
+            document.getElementById('loading-text').innerText = text;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // --- AUTENTICAÇÃO ---
+        async function handleLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('login-error');
+            
+            errorDiv.style.display = 'none';
+            if(!email || !password) return;
+
+            showLoading('Autenticando...');
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                hideLoading();
+                errorDiv.style.display = 'block';
+                errorDiv.innerText = error.message;
+            } else {
+                currentUser = data.user;
+                initDashboard();
+            }
+        }
+
+        async function handleLogout() {
+            showLoading('Saindo...');
+            await supabase.auth.signOut();
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'flex';
+            hideLoading();
+        }
+
+        // --- INICIALIZAÇÃO DO DASHBOARD ---
+        async function initDashboard() {
+            showLoading('Carregando perfil e permissões...');
+            document.getElementById('login-section').style.display = 'none';
+            document.getElementById('dashboard-section').style.display = 'block';
+
+            // Buscar usuário na tabela usuarios_escolas
+            const { data: profile, error: profileError } = await supabase
+                .from('usuarios_escolas')
+                .select('*')
+                .eq('email', currentUser.email)
+                .single();
+
+            if (profileError || !profile) {
+                alert("Erro ao localizar permissões do usuário.");
+                handleLogout();
+                return;
+            }
+
+            userProfile = profile;
+            document.getElementById('user-email').innerText = profile.email;
+
+            // Lógica de Título e Permissão
+            let dashTitle = "Painel de Desempenho";
+            if (profile.tipo_usuario === 'URE') {
+                dashTitle = "Painel Geral";
+                document.getElementById('user-role-label').innerText = "Acesso Global URE";
+            } else if (profile.tipo_usuario === 'URE_AVARE') {
+                dashTitle = "Diretoria de Ensino de Avaré";
+                document.getElementById('user-role-label').innerText = "Gestão Regional";
+            } else if (profile.tipo_usuario === 'ESCOLA') {
+                dashTitle = profile.nome_escola;
+                document.getElementById('user-role-label').innerText = "Gestão Escolar";
+                // Ocultar filtro de escola e gráfico de comparação se for perfil ESCOLA
+                document.getElementById('filter-escola-container').style.display = 'none';
+                document.getElementById('container-chart-escolas').style.display = 'none';
+            }
+
+            document.getElementById('dash-title').innerText = dashTitle;
+
+            await loadAndJoinData();
+        }
+
+        // --- FUNÇÃO AUXILIAR PARA CONTORNAR O LIMITE DE 1000 LINHAS ---
+        async function fetchAllData(table) {
+            let allData = [];
+            let limit = 1000;
+            let start = 0;
+            let hasMore = true;
+        
+            while (hasMore) {
+                const { data, error } = await supabase
+                    .from(table)
+                    .select('*')
+                    .range(start, start + limit - 1);
+        
+                if (error) {
+                    console.error(`Erro ao buscar dados da tabela ${table}:`, error.message);
+                    return { error };
+                }
+        
+                allData.push(...data);
+        
+                // Se o retorno for menor que o limite, significa que chegamos ao fim dos dados
+                if (data.length < limit) {
+                    hasMore = false;
+                } else {
+                    start += limit;
+                }
+            }
+            return { data: allData };
+        }
+        
+        // --- BUSCA E INTEGRAÇÃO DE DADOS (ATUALIZADA) ---
+        async function loadAndJoinData() {
+            showLoading('Sincronizando banco de dados (isso pode levar alguns segundos)...');
+            
+            // Busca as tabelas utilizando a função de paginação para garantir 100% dos dados
+            const [resDesempenho, resTurmas, resAvaliacoes] = await Promise.all([
+                fetchAllData('desempenho'),
+                fetchAllData('turmas'),
+                fetchAllData('avaliacoes')
+            ]);
+        
+            if (resDesempenho.error || resTurmas.error || resAvaliacoes.error) {
+                alert("Erro ao carregar dados do banco. Verifique o console para mais detalhes.");
+                hideLoading();
+                return;
+            }
+        
+            // JOIN via JavaScript
+            globalData = resDesempenho.data.map(d => {
+                const turma = resTurmas.data.find(t => t.id === d.id) || {};
+                const aval = resAvaliacoes.data.find(a => a.id === d.id_avaliacao) || {};
+                
+                return {
+                    nota: parseFloat(d.nota) || 0,
+                    avaliados: parseInt(d.avaliados) || 0,
+                    componente: d.componente || 'N/A',
+                    turma_nome: d.nome_limpo || turma.nome_limpo || 'N/A',
+                    escola: turma.escola || 'Desconhecida',
+                    tipo_classe: turma.tipo_classe || 'N/A',
+                    tipo_ensino: turma.tipo_ensino || 'N/A',
+                    aval_nome: aval.nome || 'N/A',
+                    aval_tipo: aval.tipo || 'N/A',
+                    aval_bimestre: aval.bimestre || 'N/A'
+                };
+            });
+        
+            // Aplicar Filtro de Segurança por Perfil
+            if (userProfile.tipo_usuario === 'ESCOLA') {
+                globalData = globalData.filter(d => d.escola === userProfile.nome_escola);
+            }
+        
+            populateFilters();
+            applyFilters();
+            hideLoading();
+        }
+
+        function applyFilters() {
+            const fEscola = document.getElementById('filter-escola').value;
+            const fBimestre = document.getElementById('filter-bimestre').value;
+            const fComponente = document.getElementById('filter-componente').value;
+            const fTipoAval = document.getElementById('filter-tipo-aval').value;
+            const fTipoClasse = document.getElementById('filter-tipo-classe').value;
+            const fTipoEnsino = document.getElementById('filter-tipo-ensino').value;
+
+            filteredData = globalData.filter(d => {
+                return (fEscola === 'ALL' || d.escola === fEscola) &&
+                       (fBimestre === 'ALL' || d.aval_bimestre === fBimestre) &&
+                       (fComponente === 'ALL' || d.componente === fComponente) &&
+                       (fTipoAval === 'ALL' || d.aval_tipo === fTipoAval) &&
+                       (fTipoClasse === 'ALL' || d.tipo_classe === fTipoClasse) &&
+                       (fTipoEnsino === 'ALL' || d.tipo_ensino === fTipoEnsino);
+            });
+
+            updateDashboardUI();
+        }
+
+        // --- ATUALIZAÇÃO DE UI E CÁLCULOS ---
+        function updateDashboardUI() {
+            updateCards();
+            renderCharts();
+            renderTable();
+        }
+
+        function calculateAverages(data, groupByField) {
+            const groups = {};
+            data.forEach(item => {
+                const key = item[groupByField];
+                if(!groups[key]) groups[key] = { sum: 0, count: 0, sumAvaliados: 0 };
+                groups[key].sum += item.nota * item.avaliados; // Média ponderada
+                groups[key].sumAvaliados += item.avaliados;
+                groups[key].count++;
+            });
+            
+            return Object.keys(groups).map(k => ({
+                label: k,
+                media: groups[k].sumAvaliados ? (groups[k].sum / groups[k].sumAvaliados).toFixed(2) : 0,
+                avaliados: groups[k].sumAvaliados
+            })).sort((a,b) => b.media - a.media);
+        }
+
+        function updateCards() {
+            if (filteredData.length === 0) {
+                document.getElementById('card-media-geral').innerText = '-';
+                document.getElementById('card-avaliados-geral').innerText = '0 avaliados';
+                return;
+            }
+
+            let totalNotas = 0;
+            let totalAvaliados = 0;
+            
+            filteredData.forEach(d => {
+                totalNotas += d.nota * d.avaliados;
+                totalAvaliados += d.avaliados;
+            });
+
+            const mediaGeral = totalAvaliados ? (totalNotas / totalAvaliados).toFixed(2) : 0;
+            document.getElementById('card-media-geral').innerText = mediaGeral;
+            document.getElementById('card-avaliados-geral').innerText = `${totalAvaliados} estudantes avaliados`;
+
+            const compData = calculateAverages(filteredData, 'componente');
+            if(compData.length > 0) {
+                document.getElementById('card-melhor-disc').innerText = compData[0].label;
+                document.getElementById('card-melhor-nota').innerText = `Média: ${compData[0].media}`;
+                
+                const pior = compData[compData.length - 1];
+                document.getElementById('card-pior-disc').innerText = pior.label;
+                document.getElementById('card-pior-nota').innerText = `Média: ${pior.media}`;
+            }
+        }
+
+        // --- RENDERIZAÇÃO DE GRÁFICOS ---
+        function renderCharts() {
+            // Destrói gráficos antigos
+            Object.keys(chartsInstance).forEach(k => {
+                if(chartsInstance[k]) chartsInstance[k].destroy();
+            });
+
+            const compData = calculateAverages(filteredData, 'componente');
+            const evolucaoData = calculateAverages(filteredData, 'aval_nome').reverse(); // cronológico reverso simples
+            const rankingData = calculateAverages(filteredData, 'turma_nome').slice(0, 10); // Top 10 turmas
+            const escolaData = calculateAverages(filteredData, 'escola');
+
+            // 1. Média por Componente (Barra)
+            const ctxComp = document.getElementById('chartComponentes').getContext('2d');
+            chartsInstance.comp = new Chart(ctxComp, {
+                type: 'bar',
+                data: {
+                    labels: compData.map(d => d.label),
+                    datasets: [{
+                        label: 'Média',
+                        data: compData.map(d => d.media),
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgb(30, 58, 138)',
+                        borderWidth: 1
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Média por Componente' } } }
+            });
+
+            // 2. Evolução por Avaliação (Linha)
+            const ctxEvolucao = document.getElementById('chartEvolucao').getContext('2d');
+            chartsInstance.evol = new Chart(ctxEvolucao, {
+                type: 'line',
+                data: {
+                    labels: evolucaoData.map(d => d.label),
+                    datasets: [{
+                        label: 'Média Geral',
+                        data: evolucaoData.map(d => d.media),
+                        borderColor: 'rgb(16, 185, 129)',
+                        tension: 0.1,
+                        fill: true,
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Evolução nas Avaliações' } } }
+            });
+
+            // 3. Ranking de Turmas (Barra Horizontal)
+            const ctxRanking = document.getElementById('chartRanking').getContext('2d');
+            chartsInstance.rank = new Chart(ctxRanking, {
+                type: 'bar',
+                indexAxis: 'y',
+                data: {
+                    labels: rankingData.map(d => d.label),
+                    datasets: [{
+                        label: 'Média',
+                        data: rankingData.map(d => d.media),
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Ranking de Turmas (Top 10)' } } }
+            });
+
+            // 4. Comparativo entre Escolas (Só renderiza se não for perfil escola)
+            if (userProfile && userProfile.tipo_usuario !== 'ESCOLA') {
+                const ctxEscola = document.getElementById('chartEscolas').getContext('2d');
+                chartsInstance.esc = new Chart(ctxEscola, {
+                    type: 'bar',
+                    data: {
+                        labels: escolaData.map(d => d.label),
+                        datasets: [{
+                            label: 'Média',
+                            data: escolaData.map(d => d.media),
+                            backgroundColor: 'rgba(139, 92, 246, 0.7)'
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Comparativo por Escola' } } }
+                });
+            }
+        }
+
+        // --- RENDERIZAÇÃO DA TABELA ---
+        function renderTable() {
+            const tbody = document.querySelector('#data-table tbody');
+            tbody.innerHTML = '';
+
+            // Limitar a 50 linhas para não travar navegador
+            const renderLimit = filteredData.slice(0, 50);
+
+            renderLimit.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${d.escola}</td>
+                    <td>${d.turma_nome}</td>
+                    <td>${d.componente}</td>
+                    <td>${d.aval_nome}</td>
+                    <td>${d.aval_bimestre}</td>
+                    <td>${d.avaliados}</td>
+                    <td><strong>${d.nota.toFixed(2)}</strong></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if(filteredData.length > 50) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="7" style="text-align:center; color:#6b7280;">Mostrando as primeiras 50 linhas de ${filteredData.length} resultados.</td>`;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // Verifica sessão ativa ao carregar
+        window.onload = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                initDashboard();
+            }
+        };
+
+    </script>
+</body>
+</html>
