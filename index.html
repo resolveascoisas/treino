@@ -10,7 +10,7 @@
 
     <style>
         :root {
-            --primary: #1e3a8a; /* Azul escuro institucional */
+            --primary: #1e3a8a; 
             --secondary: #3b82f6;
             --background: #f3f4f6;
             --card-bg: #ffffff;
@@ -112,12 +112,11 @@
             margin-top: 1rem;
             font-size: 0.9rem;
             display: none;
+            font-weight: 500;
         }
 
         /* --- DASHBOARD SECTION --- */
-        #dashboard-section {
-            display: none;
-        }
+        #dashboard-section { display: none; }
         header {
             background-color: var(--card-bg);
             padding: 1rem 2rem;
@@ -126,25 +125,13 @@
             align-items: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
+        .header-left { display: flex; align-items: center; gap: 1.5rem; }
         .header-left img { max-height: 50px; }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
+        .header-right { display: flex; align-items: center; gap: 1.5rem; }
         .user-info { font-size: 0.9rem; color: var(--text-muted); text-align: right; }
         .user-info strong { color: var(--text-main); display: block; }
         
-        .container {
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+        .container { padding: 2rem; max-width: 1400px; margin: 0 auto; }
 
         /* FILTROS */
         .filters-container {
@@ -157,12 +144,7 @@
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 1rem;
         }
-        .filter-item select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-        }
+        .filter-item select { width: 100%; padding: 0.5rem; border: 1px solid var(--border); border-radius: 4px; }
 
         /* CARDS */
         .cards-grid {
@@ -206,22 +188,12 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
             overflow-x: auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-        th, td {
-            padding: 0.75rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border); }
         th { background-color: #f9fafb; font-weight: 600; color: var(--text-muted); }
         tr:hover { background-color: #f9fafb; }
 
-        @media (max-width: 900px) {
-            .charts-grid { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -353,9 +325,9 @@
         // ESTADO GLOBAL
         let currentUser = null;
         let userProfile = null;
-        let globalData = []; // JOIN completo das 3 tabelas
-        let filteredData = []; // Dados filtrados para renderização
-        let chartsInstance = {}; // Instâncias do Chart.js para destruição/recriação
+        let globalData = []; 
+        let filteredData = []; 
+        let chartsInstance = {}; 
 
         // --- SISTEMA DE UI ---
         function showLoading(text = 'Carregando...') {
@@ -366,14 +338,15 @@
             document.getElementById('loading-overlay').style.display = 'none';
         }
 
-// --- AUTENTICAÇÃO COM TRATAMENTO DE ERROS CRÍTICOS ---
+        // --- AUTENTICAÇÃO COM PROTEÇÃO ---
         async function handleLogin() {
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('login-error');
             
             errorDiv.style.display = 'none';
-            if(!email || !password) {
+
+            if (!email || !password) {
                 errorDiv.style.display = 'block';
                 errorDiv.innerText = 'Por favor, preencha o e-mail e a senha.';
                 return;
@@ -382,12 +355,10 @@
             try {
                 showLoading('Autenticando...');
                 
-                // Execução da tentativa de login com proteção contra falhas de rede
                 const { data, error } = await supabase.auth.signInWithPassword({ email, password });
                 
-                hideLoading();
-                
                 if (error) {
+                    hideLoading();
                     errorDiv.style.display = 'block';
                     errorDiv.innerText = 'Erro: ' + error.message;
                 } else {
@@ -395,24 +366,26 @@
                     initDashboard();
                 }
             } catch (err) {
-                // Captura erros quando o Supabase está inacessível ou o projeto está pausado
                 hideLoading();
                 errorDiv.style.display = 'block';
-                errorDiv.innerText = 'Falha de ligação: Não foi possível contactar o servidor do Supabase.';
-                console.error('Erro crítico detetado no login:', err);
+                errorDiv.innerText = 'Falha de conexão: Verifique sua internet, bloqueadores de anúncio ou se o servidor do Supabase está ativo.';
+                console.error('Erro de rede durante login:', err);
             }
         }
 
-        // Configuração para permitir a submissão com a tecla Enter
+        async function handleLogout() {
+            showLoading('Saindo...');
+            await supabase.auth.signOut();
+            document.getElementById('dashboard-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'flex';
+            hideLoading();
+        }
+
+        // Ativar tecla Enter para Login
         document.addEventListener('DOMContentLoaded', () => {
-            ['email', 'password'].forEach(id => {
-                const input = document.getElementById(id);
-                if (input) {
-                    input.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') handleLogin();
-                    });
-                }
-            });
+            const triggerLogin = (e) => { if (e.key === 'Enter') handleLogin(); };
+            document.getElementById('email').addEventListener('keypress', triggerLogin);
+            document.getElementById('password').addEventListener('keypress', triggerLogin);
         });
 
         // --- INICIALIZAÇÃO DO DASHBOARD ---
@@ -421,7 +394,6 @@
             document.getElementById('login-section').style.display = 'none';
             document.getElementById('dashboard-section').style.display = 'block';
 
-            // Buscar usuário na tabela usuarios_escolas
             const { data: profile, error: profileError } = await supabase
                 .from('usuarios_escolas')
                 .select('*')
@@ -429,7 +401,7 @@
                 .single();
 
             if (profileError || !profile) {
-                alert("Erro ao localizar permissões do usuário.");
+                alert("Atenção: Não foi encontrado o seu perfil na tabela 'usuarios_escolas'.");
                 handleLogout();
                 return;
             }
@@ -437,7 +409,6 @@
             userProfile = profile;
             document.getElementById('user-email').innerText = profile.email;
 
-            // Lógica de Título e Permissão
             let dashTitle = "Painel de Desempenho";
             if (profile.tipo_usuario === 'URE') {
                 dashTitle = "Painel Geral";
@@ -448,7 +419,6 @@
             } else if (profile.tipo_usuario === 'ESCOLA') {
                 dashTitle = profile.nome_escola;
                 document.getElementById('user-role-label').innerText = "Gestão Escolar";
-                // Ocultar filtro de escola e gráfico de comparação se for perfil ESCOLA
                 document.getElementById('filter-escola-container').style.display = 'none';
                 document.getElementById('container-chart-escolas').style.display = 'none';
             }
@@ -458,27 +428,26 @@
             await loadAndJoinData();
         }
 
-        // --- FUNÇÃO AUXILIAR PARA CONTORNAR O LIMITE DE 1000 LINHAS ---
+        // --- FETCH COM PAGINAÇÃO PARA > 1000 LINHAS ---
         async function fetchAllData(table) {
             let allData = [];
             let limit = 1000;
             let start = 0;
             let hasMore = true;
-        
+            
             while (hasMore) {
                 const { data, error } = await supabase
                     .from(table)
                     .select('*')
                     .range(start, start + limit - 1);
-        
+            
                 if (error) {
-                    console.error(`Erro ao buscar dados da tabela ${table}:`, error.message);
+                    console.error(`Erro ao buscar tabela ${table}:`, error.message);
                     return { error };
                 }
-        
+            
                 allData.push(...data);
-        
-                // Se o retorno for menor que o limite, significa que chegamos ao fim dos dados
+            
                 if (data.length < limit) {
                     hasMore = false;
                 } else {
@@ -488,11 +457,10 @@
             return { data: allData };
         }
         
-        // --- BUSCA E INTEGRAÇÃO DE DADOS (ATUALIZADA) ---
+        // --- PROCESSAMENTO DOS DADOS ---
         async function loadAndJoinData() {
-            showLoading('Sincronizando banco de dados (isso pode levar alguns segundos)...');
+            showLoading('Sincronizando avaliações (isto pode demorar uns segundos)...');
             
-            // Busca as tabelas utilizando a função de paginação para garantir 100% dos dados
             const [resDesempenho, resTurmas, resAvaliacoes] = await Promise.all([
                 fetchAllData('desempenho'),
                 fetchAllData('turmas'),
@@ -500,12 +468,11 @@
             ]);
         
             if (resDesempenho.error || resTurmas.error || resAvaliacoes.error) {
-                alert("Erro ao carregar dados do banco. Verifique o console para mais detalhes.");
+                alert("Ocorreu um erro ao descarregar as informações. Consulte a consola do navegador.");
                 hideLoading();
                 return;
             }
         
-            // JOIN via JavaScript
             globalData = resDesempenho.data.map(d => {
                 const turma = resTurmas.data.find(t => t.id === d.id) || {};
                 const aval = resAvaliacoes.data.find(a => a.id === d.id_avaliacao) || {};
@@ -524,7 +491,6 @@
                 };
             });
         
-            // Aplicar Filtro de Segurança por Perfil
             if (userProfile.tipo_usuario === 'ESCOLA') {
                 globalData = globalData.filter(d => d.escola === userProfile.nome_escola);
             }
@@ -532,6 +498,26 @@
             populateFilters();
             applyFilters();
             hideLoading();
+        }
+
+        // --- LÓGICA DE FILTROS ---
+        function getUniqueValues(data, key) {
+            return [...new Set(data.map(item => item[key]))].filter(Boolean).sort();
+        }
+
+        function populateFilters() {
+            const addOptions = (selectId, values) => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="ALL">Todos</option>';
+                values.forEach(v => { select.innerHTML += `<option value="${v}">${v}</option>`; });
+            };
+
+            addOptions('filter-escola', getUniqueValues(globalData, 'escola'));
+            addOptions('filter-bimestre', getUniqueValues(globalData, 'aval_bimestre'));
+            addOptions('filter-componente', getUniqueValues(globalData, 'componente'));
+            addOptions('filter-tipo-aval', getUniqueValues(globalData, 'aval_tipo'));
+            addOptions('filter-tipo-classe', getUniqueValues(globalData, 'tipo_classe'));
+            addOptions('filter-tipo-ensino', getUniqueValues(globalData, 'tipo_ensino'));
         }
 
         function applyFilters() {
@@ -554,7 +540,6 @@
             updateDashboardUI();
         }
 
-        // --- ATUALIZAÇÃO DE UI E CÁLCULOS ---
         function updateDashboardUI() {
             updateCards();
             renderCharts();
@@ -566,7 +551,7 @@
             data.forEach(item => {
                 const key = item[groupByField];
                 if(!groups[key]) groups[key] = { sum: 0, count: 0, sumAvaliados: 0 };
-                groups[key].sum += item.nota * item.avaliados; // Média ponderada
+                groups[key].sum += item.nota * item.avaliados;
                 groups[key].sumAvaliados += item.avaliados;
                 groups[key].count++;
             });
@@ -608,19 +593,16 @@
             }
         }
 
-        // --- RENDERIZAÇÃO DE GRÁFICOS ---
         function renderCharts() {
-            // Destrói gráficos antigos
             Object.keys(chartsInstance).forEach(k => {
                 if(chartsInstance[k]) chartsInstance[k].destroy();
             });
 
             const compData = calculateAverages(filteredData, 'componente');
-            const evolucaoData = calculateAverages(filteredData, 'aval_nome').reverse(); // cronológico reverso simples
-            const rankingData = calculateAverages(filteredData, 'turma_nome').slice(0, 10); // Top 10 turmas
+            const evolucaoData = calculateAverages(filteredData, 'aval_nome').reverse(); 
+            const rankingData = calculateAverages(filteredData, 'turma_nome').slice(0, 10); 
             const escolaData = calculateAverages(filteredData, 'escola');
 
-            // 1. Média por Componente (Barra)
             const ctxComp = document.getElementById('chartComponentes').getContext('2d');
             chartsInstance.comp = new Chart(ctxComp, {
                 type: 'bar',
@@ -637,7 +619,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Média por Componente' } } }
             });
 
-            // 2. Evolução por Avaliação (Linha)
             const ctxEvolucao = document.getElementById('chartEvolucao').getContext('2d');
             chartsInstance.evol = new Chart(ctxEvolucao, {
                 type: 'line',
@@ -655,7 +636,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Evolução nas Avaliações' } } }
             });
 
-            // 3. Ranking de Turmas (Barra Horizontal)
             const ctxRanking = document.getElementById('chartRanking').getContext('2d');
             chartsInstance.rank = new Chart(ctxRanking, {
                 type: 'bar',
@@ -671,7 +651,6 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Ranking de Turmas (Top 10)' } } }
             });
 
-            // 4. Comparativo entre Escolas (Só renderiza se não for perfil escola)
             if (userProfile && userProfile.tipo_usuario !== 'ESCOLA') {
                 const ctxEscola = document.getElementById('chartEscolas').getContext('2d');
                 chartsInstance.esc = new Chart(ctxEscola, {
@@ -689,12 +668,10 @@
             }
         }
 
-        // --- RENDERIZAÇÃO DA TABELA ---
         function renderTable() {
             const tbody = document.querySelector('#data-table tbody');
             tbody.innerHTML = '';
 
-            // Limitar a 50 linhas para não travar navegador
             const renderLimit = filteredData.slice(0, 50);
 
             renderLimit.forEach(d => {
@@ -713,12 +690,11 @@
 
             if(filteredData.length > 50) {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td colspan="7" style="text-align:center; color:#6b7280;">Mostrando as primeiras 50 linhas de ${filteredData.length} resultados.</td>`;
+                tr.innerHTML = `<td colspan="7" style="text-align:center; color:#6b7280;">A mostrar as primeiras 50 linhas de ${filteredData.length} resultados.</td>`;
                 tbody.appendChild(tr);
             }
         }
 
-        // Verifica sessão ativa ao carregar
         window.onload = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
