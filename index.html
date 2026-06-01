@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Educacional Avançado</title>
+    <title>Avaliações URE Avaré</title>
     
     <!-- Supabase JS & Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -233,7 +233,7 @@
             <h2>⚠️ Versão Beta</h2>
             <p>Este painel encontra-se em fase de <strong>testes (Versão Beta)</strong> e o seu caráter é estritamente analítico.</p>
             <p>As notas apresentadas podem diferir dos painéis disponibilizados no BI do <strong>Escola Total</strong> e nas tabelas oficiais publicadas pela URE. Isso ocorre porque o método de cálculo aplicado aqui (Média Ponderada Real Bidimensional) difere intencionalmente para padronizar e aprofundar as análises.</p>
-            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser considerado em hipótese alguma como resultado oficial da URE.</p>
+            <p>Portanto, considere este ambiente <strong>apenas como uma ferramenta de visualização para apoio pedagógico</strong>. Ele não substitui e não deve ser consideradoe em hipótese alguma como resultado oficial da URE, pois está sujeita a imprecisões.</p>
             <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="closeDisclaimer()">Ciente, acessar painel</button>
         </div>
     </div>
@@ -260,7 +260,7 @@
     <div id="login-section">
         <div class="login-box">
             <img src="./imagens/logo.png" alt="Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNTAiIGhlaWdodD0iNTAiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiNlNWU3ZWIiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2YjcyODAiIGR5PSIuM2VtIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MT0dPPC90ZXh0Pjwvc3ZnPg=='">
-            <div class="input-group"><label>Nome de usuário</label><input type="email" id="email" placeholder="exemplo@ure.avare"></div>
+            <div class="input-group"><label>E-mail Institucional</label><input type="email" id="email" placeholder="exemplo@ure.avare"></div>
             <div class="input-group"><label>Senha</label><input type="password" id="password" placeholder="••••••••"></div>
             <button class="btn" onclick="handleLogin()">Entrar</button>
             <div id="login-error">Credenciais inválidas. Tente novamente.</div>
@@ -337,7 +337,7 @@
                 <button class="btn btn-toggle active" id="btn-view-eval" onclick="setViewMode('eval')">📋 Histórico (Geral)</button>
                 <button class="btn btn-toggle" id="btn-view-comp" onclick="setViewMode('component')">📊 Por Componentes</button>
                 <button class="btn btn-toggle" id="btn-view-single" onclick="setViewMode('single_component')">🎯 Único Componente</button>
-                <button class="btn btn-toggle" id="btn-view-single-aval" onclick="setViewMode('single_eval')">📝 Única Avaliação</button>
+                <button class="btn btn-toggle" id="btn-view-single-aval" onclick="setViewMode('single_eval')">🎯 Única Avaliação</button>
                 <button class="btn btn-toggle" id="btn-view-compare" onclick="setViewMode('compare')">⚖️ Comparar Desempenhos</button>
                 <button class="btn btn-toggle" id="btn-view-general-compare" onclick="setViewMode('general_compare')">📈 Comparativo Geral</button>
                 
@@ -362,7 +362,7 @@
             <!-- CARDS C/ PÓDIO -->
             <div class="cards-grid">
                 <div class="card">
-                    <h3>Média Ponderada Real</h3>
+                    <h3>Média</h3>
                     <div class="value" id="card-media-geral">-</div>
                 </div>
                 <div class="card">
@@ -370,7 +370,7 @@
                     <div id="card-melhor-disc">-</div>
                 </div>
                 <div class="card">
-                    <h3>Oportunidades de Melhoria</h3>
+                    <h3>Atenção (Componentes)</h3>
                     <div id="card-pior-disc">-</div>
                 </div>
                 <div class="card">
@@ -378,7 +378,7 @@
                     <div id="card-melhor-entidade">-</div>
                 </div>
                 <div class="card">
-                    <h3>Oportunidades (<span id="label-pior-ent">Entidades</span>)</h3>
+                    <h3>Atenção (<span id="label-pior-ent">Entidades</span>)</h3>
                     <div id="card-pior-entidade">-</div>
                 </div>
             </div>
@@ -392,7 +392,10 @@
                             <span style="display:flex; align-items:center; gap:0.3rem;"><span style="width:12px;height:12px;background:var(--yellow);border-radius:50%;display:inline-block;"></span> 3 a 5</span>
                             <span style="display:flex; align-items:center; gap:0.3rem;"><span style="width:12px;height:12px;background:var(--green);border-radius:50%;display:inline-block;"></span> Acima de 5</span>
                         </div>
-                        <button class="btn btn-print" style="background-color: #facc15; color: #1f2937; margin: 0; padding: 0.3rem 0.8rem;" id="btn-toggle-metas" onclick="toggleMetas()">🎯 Exibir Metas</button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-print" style="background-color: #3b82f6; color: white; margin: 0; padding: 0.3rem 0.8rem;" id="btn-toggle-2026" onclick="toggleOnly2026()">📅 Considerar somente 2026</button>
+                            <button class="btn btn-print" style="background-color: #facc15; color: #1f2937; margin: 0; padding: 0.3rem 0.8rem;" id="btn-toggle-metas" onclick="toggleMetas()">🎯 Exibir Metas</button>
+                        </div>
                     </div>
                 </div>
                 <div id="heatmap-container"></div>
@@ -428,6 +431,7 @@
         let sortColumn = 'media_geral'; 
         let sortDirection = 'desc'; 
         let isMetasVisible = false;
+        let isOnly2026 = false;
 
         // --- MAPA DE METAS DAS ESCOLAS 2026-2027 ---
         const baseMetas = [
@@ -498,6 +502,19 @@
             isMetasVisible = !isMetasVisible;
             document.getElementById('btn-toggle-metas').innerText = isMetasVisible ? '🎯 Ocultar Metas' : '🎯 Exibir Metas';
             renderHeatmapTable();
+        }
+
+        function toggleOnly2026() {
+            isOnly2026 = !isOnly2026;
+            const btn = document.getElementById('btn-toggle-2026');
+            if (isOnly2026) {
+                btn.innerText = '📅 Incluir SARESP 2025';
+                btn.style.backgroundColor = '#10b981'; 
+            } else {
+                btn.innerText = '📅 Considerar somente 2026';
+                btn.style.backgroundColor = '#3b82f6';
+            }
+            applyFilters();
         }
 
         // --- MANIPULAÇÃO DO DROPDOWN (MULTIPLE CHECKBOXES) ---
@@ -757,7 +774,13 @@
                 const passTipoClasse = selTipoClasse.length === 0 || selTipoClasse.includes(d.tipo_classe);
                 const passTipoEnsino = selTipoEnsino.length === 0 || selTipoEnsino.includes(d.tipo_ensino);
                 
-                return passEscola && passComponente && passTipoClasse && passTipoEnsino;
+                let pass2026 = true;
+                if (isOnly2026) {
+                    const b = String(d.aval_bimestre).trim();
+                    pass2026 = ['1', '2', '3', '4'].includes(b);
+                }
+                
+                return passEscola && passComponente && passTipoClasse && passTipoEnsino && pass2026;
             });
             processViewAndRender();
         }
@@ -1004,6 +1027,7 @@
             let html = `<table class="heatmap"><thead><tr>`;
             html += `<th>Clas.<br><span style="font-size:0.75rem;">/${rows.length}</span></th>`;
             html += `<th class="row-header" onclick="toggleSort('row_header')">Unidade / Sala ${sortColumn === 'row_header' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
+            
             html += `<th onclick="toggleSort('avaliados')">Alunos<br><span style="font-size:0.75rem;">(Pres.)</span> ${sortColumn === 'avaliados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
             html += `<th onclick="toggleSort('matriculados')">Total<br><span style="font-size:0.75rem;">Matric.</span> ${sortColumn === 'matriculados' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
             html += `<th onclick="toggleSort('participacao')">Part.<br><span style="font-size:0.75rem;">(%)</span> ${sortColumn === 'participacao' ? (sortDirection === 'asc' ? '▲' : '▼') : ''}</th>`;
@@ -1077,7 +1101,7 @@
                 if (isMetasVisible) {
                     html += `<td style="color:var(--yellow); font-weight:bold;">4,8</td><td style="color:var(--blue-info); font-weight:bold;">5,1</td>`;
                 }
-
+                
                 html += `</tr>`;
             }
 
@@ -1087,6 +1111,7 @@
 
                 html += `<tr><td style="font-weight:bold; color:var(--text-muted);">${rank}º</td>`;
                 html += `<td class="row-header" onclick="handleRowClick('${r.replace(/'/g, "\\'")}')">${r}</td>`;
+                
                 html += `<td>${pData.avaliados}</td><td>${pData.matriculados}</td><td style="color:var(--blue-info); font-weight:bold;">${pData.participacao.toFixed(1).replace('.',',')}%</td>`;
                 
                 colunas.forEach(c => {
@@ -1119,7 +1144,7 @@
                         } else html += `<td class="bg-empty">-</td>`;
                     }
                 });
-
+                
                 if (currentViewMode !== 'compare') {
                     const rTotal = rowTotalizador[r]; let mVal = rTotal && rTotal.totalWeight > 0 ? (rTotal.sumProduct / rTotal.totalWeight).toFixed(2) : '-';
                     html += `<td class="${mVal !== '-' ? (parseFloat(mVal) < 3 ? 'bg-red' : (parseFloat(mVal) > 5 ? 'bg-green' : 'bg-yellow')) : 'bg-empty'}" style="border-left: 3px solid #1f2937;">${mVal.replace('.', ',')}</td>`;
@@ -1284,7 +1309,7 @@
             const { data: profile, error } = await supabaseClient.from('usuarios_escolas').select('*').eq('email', currentUser.email).single();
             if (error || !profile) { alert("Perfil não identificado."); handleLogout(); return; }
             userProfile = profile; document.getElementById('user-email').innerText = profile.email;
-            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "URE de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Painel de Gestão URE"; } 
+            if (profile.tipo_usuario === 'URE' || profile.tipo_usuario === 'URE_AVARE') { document.getElementById('dash-title').innerText = profile.tipo_usuario === 'URE_AVARE' ? "URE de Avaré" : "Painel Geral URE"; document.getElementById('user-role-label').innerText = "Gestor URE"; } 
             else { document.getElementById('dash-title').innerText = profile.nome_escola; document.getElementById('user-role-label').innerText = "Gestão Escolar"; document.getElementById('filter-escola-container').style.display = 'none'; }
             await loadAndJoinData();
         }
